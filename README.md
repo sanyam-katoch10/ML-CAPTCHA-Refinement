@@ -1,8 +1,8 @@
 
 
-<p align="center">
+<div style="text-align: center;">
   <h1>🤖</h1>
-</p>
+</div>
 
 <h1 align="center">ML-Enhanced CAPTCHA Refinement System</h1>
 <h3 align="center">AI-Powered Adaptive CAPTCHA Generator & Difficulty Classifier</h3>
