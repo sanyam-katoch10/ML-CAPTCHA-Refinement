@@ -1,6 +1,6 @@
 
 
-# <img src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/null/external-ai-artificial-intelligence-flatart-icons-outline-flatarticons-2.png" width="45"/>
+<img src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/null/external-ai-artificial-intelligence-flatart-icons-outline-flatarticons-2.png" width="45"/>
 
 # **ML-Enhanced CAPTCHA Refinement System**
 
@@ -167,20 +167,6 @@ A lightweight **Convolutional Neural Network** trained on synthetic CAPTCHA imag
 
 ---
 
-# 🌍 **Deploying on Streamlit Cloud**
-
-1. Push repo to GitHub
-2. Go to [https://share.streamlit.io](https://share.streamlit.io)
-3. Select your repository
-4. Set app entry point as:
-
-```
-src/app.py
-```
-
-5. Deploy 🚀
-
----
 
 # 💡 **Future Enhancements**
 
