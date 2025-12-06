@@ -1,8 +1,6 @@
 
 
-<div style="text-align: center;">
-  <h1>🤖</h1>
-</div>
+<h1 style="text-align: center;">🤖</h1>
 
 <h1 align="center">ML-Enhanced CAPTCHA Refinement System</h1>
 <h3 align="center">AI-Powered Adaptive CAPTCHA Generator & Difficulty Classifier</h3>
