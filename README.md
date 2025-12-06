@@ -1,6 +1,7 @@
 
 
-<img src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/null/external-ai-artificial-intelligence-flatart-icons-outline-flatarticons-2.png" width="45"/>
+<img src="https://img.icons8.com/ios-filled/50/artificial-intelligence.png" width="45"/>
+
 
 # **ML-Enhanced CAPTCHA Refinement System**
 
