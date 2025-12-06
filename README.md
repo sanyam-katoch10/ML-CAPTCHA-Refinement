@@ -1,15 +1,12 @@
 
-<h1>🤖 ML-Enhanced CAPTCHA Refinement System</h1>
 
 <p align="center">
-  <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" width="80"/>
+  🤖
 </p>
 
 <h1 align="center">ML-Enhanced CAPTCHA Refinement System</h1>
 <h3 align="center">AI-Powered Adaptive CAPTCHA Generator & Difficulty Classifier</h3>
 
-
-### *AI-Powered Adaptive CAPTCHA Generator & Difficulty Classifier*
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge"/>
