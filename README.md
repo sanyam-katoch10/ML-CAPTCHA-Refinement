@@ -50,7 +50,7 @@ The system dynamically modulates **noise**, **distortion**, and **clutter** unti
 ### 🤖 **CNN Difficulty Classifier**
 
 * Trained on 6,000 synthetic images
-* 80–90% classification accuracy
+* 95% classification accuracy
 * TensorFlow/Keras-based
 
 ### 🔄 **Adaptive Refinement Loop**
