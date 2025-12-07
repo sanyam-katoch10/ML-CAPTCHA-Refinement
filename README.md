@@ -196,6 +196,11 @@ Lightweight **CNN** for CAPTCHA difficulty classification.
 
 *(Add screenshot here)*
 
+### Confusion Mastrix
+<p align="center">
+  <img src="confusion_matrix.png" alt="Confusion Matrix" width="600"/>
+</p>
+
 </details>
 
 ---
