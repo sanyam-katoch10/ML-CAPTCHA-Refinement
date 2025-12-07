@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 streamlit
 tensorflow==2.15.0
 numpy
 Pillow
 opencv-python-headless
 captcha
+=======
+streamlit
+tensorflow==2.15.0
+numpy
+Pillow
+opencv-python-headless
+captcha
+>>>>>>> 4b9e8367c507160afca1e5c65eb2ec2a1dc9322c
