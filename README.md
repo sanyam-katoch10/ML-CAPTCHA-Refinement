@@ -206,17 +206,21 @@ streamlit run src/app.py
 ## 👤 Author
 
 <div align="center">
-  <b>Sanyam Katoch</b>  
-  <br>Connect with me:  
-  <br><br>
-  <a href="https://github.com/sanyam-katoch10" target="_blank">
-    <img src="https://img.shields.io/badge/GitHub-sanyam--katoch10-000?style=for-the-badge&logo=github"/>
-  </a>
-  <a href="https://www.linkedin.com/in/sanyam-katoch/" target="_blank">
-    <img src="https://img.shields.io/badge/LinkedIn-Sanyam--Katoch-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
-  </a>
+  <h3>👤 Sanyam Katoch</h3>
+  <p>Connect with me:</p>
+  
+  <p>
+    <a href="https://github.com/sanyam-katoch10" target="_blank">
+      <img src="https://img.shields.io/badge/GitHub-sanyam--katoch10-000?style=for-the-badge&logo=github" alt="GitHub"/>
+    </a>
+  </p>
+  
+  <p>
+    <a href="https://www.linkedin.com/in/sanyam-katoch/" target="_blank">
+      <img src="https://img.shields.io/badge/LinkedIn-Sanyam--Katoch-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
+    </a>
+  </p>
 </div>
 
 
 
-Do you want me to do that next?
