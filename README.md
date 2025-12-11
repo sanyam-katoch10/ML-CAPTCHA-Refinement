@@ -203,10 +203,10 @@ streamlit run src/app.py
 
 ---
 
-## 👤 Author
+## 👤 Developed by
 
 <div align="center">
-  <h3>👤 Sanyam Katoch</h3>
+  <h3>Sanyam Katoch</h3>
   <p>Connect with me:</p>
   
   <p>
