@@ -201,8 +201,8 @@ streamlit run src/app.py
 # 👤 **Author**
 
 <div align="center">
-  <b>Developed by</b> &nbsp;
-  <b>Sanyam Katoch</b>  
+  <b>Developed by</b> &nbsp;&nbsp;
+  <b>Sanyam Katoch </b>  
   <br>Connect with me 
 <br>
 <div align="center">
