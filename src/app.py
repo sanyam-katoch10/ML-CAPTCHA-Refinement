@@ -13,56 +13,19 @@ st.set_page_config(page_title="ML CAPTCHA Refinement", page_icon="🔐", layout=
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1cb5e0);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+    background: linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80, #facc15);
+    background-size: 800% 800%;
+    animation: animatedGradient 20s ease infinite;
     color: white;
 }
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-.particle {
-    position: fixed;
-    width: 6px;
-    height: 6px;
-    background: rgba(255,255,255,0.5);
-    border-radius: 50%;
-    animation: float 20s infinite linear;
-    z-index: 0;
-}
-@keyframes float {
-    from { transform: translateY(100vh); }
-    to { transform: translateY(-10vh); }
-}
-.glass {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(18px);
-    border-radius: 20px;
-    padding: 25px;
-    border: 1px solid rgba(255,255,255,0.15);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-}
-.hero-title {
-    font-size: 50px;
-    font-weight: 800;
-    text-align: center;
-}
-.hero-sub {
-    text-align: center;
-    color: #d1d5db;
-    margin-bottom: 40px;
-    font-size: 18px;
-}
-.stButton button {
-    background: linear-gradient(135deg, #00f2fe, #4facfe);
-    border-radius: 14px;
-    font-weight: 600;
-    border: none;
+@keyframes animatedGradient {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 for _ in range(25):
     left = random.randint(0, 100)
