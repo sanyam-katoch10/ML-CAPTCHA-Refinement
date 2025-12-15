@@ -79,8 +79,8 @@ with col3:
         img.save(buf,format="PNG")
         st.download_button("⬇️ Download CAPTCHA",data=buf.getvalue(),file_name=f"{text}_{predicted}.png",mime="image/png",use_container_width=True)
 
-    elif auto:
-        grid_size = 5
+    if auto:
+        grid_size = 4
         confidences = []
         difficulties = np.zeros((grid_size,grid_size))
         for step in range(6):
@@ -94,26 +94,26 @@ with col3:
             confidences.append(avg_conf)
 
             fig_line,ax_line = plt.subplots()
-            ax_line.plot(confidences,marker='o',color="#00ffff",linewidth=2)
+            ax_line.plot(confidences, marker='o', color="cyan", linewidth=2)
             ax_line.set_ylim(0,1)
             ax_line.set_facecolor("#0f1a25")
-            ax_line.set_title("Average Confidence Convergence",color="#e5e5e5")
-            ax_line.set_xlabel("Iteration",color="#c0c0c0")
-            ax_line.set_ylabel("Confidence",color="#c0c0c0")
+            ax_line.set_title("Average Confidence Convergence", color="#e5e5e5")
+            ax_line.set_xlabel("Iteration", color="#c0c0c0")
+            ax_line.set_ylabel("Confidence", color="#c0c0c0")
             ax_line.tick_params(colors="#c0c0c0")
             line_placeholder.pyplot(fig_line, clear_figure=True)
+            plt.close(fig_line)
 
             fig_heat,ax_heat = plt.subplots(figsize=(5,5))
-            sns.heatmap(difficulties,annot=True,fmt=".2f",cmap="coolwarm",ax=ax_heat,cbar_kws={'color':'#e5e5e5'})
-            ax_heat.set_title(f"Difficulty Heatmap (Step {step+1})",color="#e5e5e5")
+            sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="coolwarm", ax=ax_heat, cbar_kws={'color':'#e5e5e5'})
+            ax_heat.set_title(f"Difficulty Heatmap (Step {step+1})", color="#e5e5e5")
             ax_heat.tick_params(colors="#c0c0c0")
             heatmap_placeholder.pyplot(fig_heat, clear_figure=True)
+            plt.close(fig_heat)
 
-            time.sleep(0.7)
+            time.sleep(0.5)
         st.success("Target difficulty stabilized ✅")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-
-
-st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Made by SANYAM KATOCH ✨</center>", unsafe_allow_html=True)
+st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Dark ML Visualization Dashboard ✨</center>", unsafe_allow_html=True)
