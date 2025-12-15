@@ -8,7 +8,7 @@ from PIL import Image
 from tensorflow.keras.models import load_model
 from generator import generate_captcha
 
-model=load_model("models/captcha_model.keras")
+model = load_model("models/captcha_model.keras", compile=False)
 cls=["easy","medium","hard"]
 
 def predict(img):
