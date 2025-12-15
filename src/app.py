@@ -79,7 +79,7 @@ with col3:
         img.save(buf,format="PNG")
         st.download_button("⬇️ Download CAPTCHA",data=buf.getvalue(),file_name=f"{text}_{predicted}.png",mime="image/png",use_container_width=True)
 
-    if auto:
+    elif auto:
         grid_size = 5
         confidences = []
         difficulties = np.zeros((grid_size,grid_size))
