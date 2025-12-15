@@ -14,22 +14,22 @@ st.markdown("""
 .stApp {
     position: relative;
     overflow: hidden;
-    background: #0f2027;
+    background: #1c1c1c;
     color: #e5e5e5;
 }
 
-/* Animated gradient background layer */
+/* Animated dark matte gradient background layer */
 .stApp::before {
     content: "";
     position: fixed;
     top: 0; left: 0; right:0; bottom:0;
-    background: linear-gradient(45deg, #0f2027, #203a43, #2c5364, #1f1c2c);
+    background: linear-gradient(135deg, #1c1c1c, #2a2a2a, #3a3a3a, #2e2e2e);
     background-size: 600% 600%;
-    animation: bgGradient 30s ease infinite;
+    animation: bgGradient 40s ease infinite;
     z-index: -2;
 }
 
-/* Gradient animation */
+/* Gradient animation for dark shades */
 @keyframes bgGradient {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -42,19 +42,19 @@ st.markdown("""
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    animation: float 20s infinite linear;
+    animation: float 25s infinite linear;
     z-index: -1;
-    box-shadow: 0 0 12px rgba(255,255,255,0.25);
-    opacity: 0.7;
+    box-shadow: 0 0 12px rgba(255,255,255,0.15);
+    opacity: 0.6;
 }
-.particle:nth-child(2) { width: 8px; height: 8px; animation-duration: 25s; }
-.particle:nth-child(3) { width: 5px; height: 5px; animation-duration: 15s; }
-.particle:nth-child(4) { width: 10px; height: 10px; animation-duration: 30s; }
+.particle:nth-child(2) { width: 8px; height: 8px; animation-duration: 30s; }
+.particle:nth-child(3) { width: 5px; height: 5px; animation-duration: 20s; }
+.particle:nth-child(4) { width: 10px; height: 10px; animation-duration: 35s; }
 
 @keyframes float {
-    0% { transform: translateY(100vh) translateX(0) scale(0.8); opacity:0.5; }
-    50% { transform: translateY(50vh) translateX(20px) scale(1.1); opacity:1; }
-    100% { transform: translateY(-10vh) translateX(-10px) scale(0.9); opacity:0.5; }
+    0% { transform: translateY(100vh) translateX(0) scale(0.8); opacity:0.4; }
+    50% { transform: translateY(50vh) translateX(20px) scale(1.1); opacity:0.7; }
+    100% { transform: translateY(-10vh) translateX(-10px) scale(0.9); opacity:0.4; }
 }
 
 /* Glass panels */
@@ -67,7 +67,7 @@ st.markdown("""
     box-shadow: 0 8px 32px rgba(0,0,0,0.6);
 }
 
-/* Hero title with animated glow */
+/* Hero title with subtle pulse */
 .hero-title {
     font-size: 50px;
     font-weight: 800;
@@ -81,31 +81,31 @@ st.markdown("""
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 250px;
-    height: 80px;
-    background: radial-gradient(circle, rgba(255,255,255,0.15), transparent);
+    width: 220px;
+    height: 70px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
     transform: translate(-50%, -50%) scale(1);
     border-radius: 50%;
-    animation: pulse 3s infinite ease-in-out;
+    animation: pulse 4s infinite ease-in-out;
     z-index: -1;
 }
 @keyframes pulse {
-    0% { transform: translate(-50%, -50%) scale(1); opacity:0.4; }
-    50% { transform: translate(-50%, -50%) scale(1.3); opacity:0.7; }
-    100% { transform: translate(-50%, -50%) scale(1); opacity:0.4; }
+    0% { transform: translate(-50%, -50%) scale(1); opacity:0.3; }
+    50% { transform: translate(-50%, -50%) scale(1.3); opacity:0.6; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity:0.3; }
 }
 
 /* Hero subtitle */
 .hero-sub {
     text-align: center;
-    color: #c0c0c0;
+    color: #b0b0b0;
     margin-bottom: 40px;
     font-size: 18px;
 }
 
 /* Buttons */
 .stButton button {
-    background: linear-gradient(135deg, #1f1c2c, #928dab);
+    background: linear-gradient(135deg, #2b2b2b, #4a4a4a);
     border-radius: 14px;
     font-weight: 600;
     border: none;
@@ -114,7 +114,7 @@ st.markdown("""
 }
 .stButton button:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    box-shadow: 0 0 15px rgba(255,255,255,0.2);
 }
 
 /* Container padding adjustments */
@@ -126,6 +126,7 @@ st.markdown("""
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 
 st.markdown('<div class="banner"><div></div><div></div><div></div></div>', unsafe_allow_html=True)
@@ -211,5 +212,6 @@ with col3:
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Made by SANYAM KATOCH ✨</center>", unsafe_allow_html=True)
+
 
 
