@@ -123,51 +123,52 @@ with col3:
         st.download_button("⬇️ Download CAPTCHA", data=buf.getvalue(), file_name=f"{text}_{predicted}.png", mime="image/png", use_container_width=True)
 
     if auto:
-    grid_size = 5
-    confidences = []
-    difficulties = np.zeros((grid_size, grid_size))
-
-    # Initialize empty figures for live update
-    fig_line, ax_line = plt.subplots(figsize=(7,5))
-    ax_line.set_ylim(0,1)
-    ax_line.set_facecolor("white")
-    fig_line.patch.set_facecolor("white")
-    ax_line.set_title("Average Confidence Convergence", color="black")
-    ax_line.set_xlabel("Iteration", color="black")
-    ax_line.set_ylabel("Confidence", color="black")
-    ax_line.tick_params(colors="black")
-    line_plot, = ax_line.plot([], [], marker='o', color='green', linewidth=2)
-    line_placeholder.pyplot(fig_line, clear_figure=True)
-
-    fig_heat, ax_heat = plt.subplots(figsize=(7,5))
-    heatmap_placeholder.pyplot(fig_heat, clear_figure=True)
-
-    for step in range(6):
-        for i in range(grid_size):
-            for j in range(grid_size):
-                img, text, pred = refine(target)
-                _, conf = predict(img)
-                difficulties[i, j] = conf
-
-        avg_conf = difficulties.mean()
-        confidences.append(avg_conf)
-
-        # Update convergence line smoothly
-        line_plot.set_data(range(len(confidences)), confidences)
-        ax_line.set_xlim(0, max(5,len(confidences)))
+        grid_size = 5
+        confidences = []
+        difficulties = np.zeros((grid_size, grid_size))
+    
+        # Initialize empty figures for live update
+        fig_line, ax_line = plt.subplots(figsize=(7,5))
+        ax_line.set_ylim(0,1)
+        ax_line.set_facecolor("white")
+        fig_line.patch.set_facecolor("white")
+        ax_line.set_title("Average Confidence Convergence", color="black")
+        ax_line.set_xlabel("Iteration", color="black")
+        ax_line.set_ylabel("Confidence", color="black")
+        ax_line.tick_params(colors="black")
+        line_plot, = ax_line.plot([], [], marker='o', color='green', linewidth=2)
         line_placeholder.pyplot(fig_line, clear_figure=True)
-
-        # Update heatmap
-        ax_heat.clear()
-        hm = sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="coolwarm", square=True, ax=ax_heat)
-        cbar = hm.collections[0].colorbar
-        cbar.ax.tick_params(color="black", labelcolor="black")
-        ax_heat.tick_params(colors="black")
-        fig_heat.patch.set_facecolor("white")
+    
+        fig_heat, ax_heat = plt.subplots(figsize=(7,5))
         heatmap_placeholder.pyplot(fig_heat, clear_figure=True)
-
-        time.sleep(0.5)
-
-    st.success("Target difficulty stabilized ✅")
+    
+        for step in range(6):
+            for i in range(grid_size):
+                for j in range(grid_size):
+                    img, text, pred = refine(target)
+                    _, conf = predict(img)
+                    difficulties[i, j] = conf
+    
+            avg_conf = difficulties.mean()
+            confidences.append(avg_conf)
+    
+            # Update convergence line smoothly
+            line_plot.set_data(range(len(confidences)), confidences)
+            ax_line.set_xlim(0, max(5,len(confidences)))
+            line_placeholder.pyplot(fig_line, clear_figure=True)
+    
+            # Update heatmap
+            ax_heat.clear()
+            hm = sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="coolwarm", square=True, ax=ax_heat)
+            cbar = hm.collections[0].colorbar
+            cbar.ax.tick_params(color="black", labelcolor="black")
+            ax_heat.tick_params(colors="black")
+            fig_heat.patch.set_facecolor("white")
+            heatmap_placeholder.pyplot(fig_heat, clear_figure=True)
+    
+            time.sleep(0.5)
+    
+        st.success("Target difficulty stabilized ✅")
 
 st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Made by SANYAM KATOCH ✨</center>", unsafe_allow_html=True)
+
