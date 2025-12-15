@@ -112,8 +112,10 @@ with col3:
     target = st.selectbox("Target Difficulty", ["easy", "medium", "hard"])
     refine_btn = st.button("✨ Refine CAPTCHA")
     auto = st.button("🚀 Start Auto-Refinement")
+
+    # placeholders for live updates
+    line_placeholder = st.empty()
     heatmap_placeholder = st.empty()
-    chart_placeholder = st.empty()
 
     if refine_btn:
         img, text, predicted = refine(target)
@@ -124,21 +126,38 @@ with col3:
 
     if auto:
         grid_size = 5
+        confidences = []
         difficulties = np.zeros((grid_size, grid_size))
+        
         for step in range(6):
+            # Update all CAPTCHA in grid
             for i in range(grid_size):
                 for j in range(grid_size):
                     img, text, pred = refine(target)
                     _, conf = predict(img)
                     difficulties[i, j] = conf
+            
+      
+            avg_conf = difficulties.mean()
+            confidences.append(avg_conf)
+            fig_line, ax_line = plt.subplots()
+            ax_line.plot(confidences, marker='o', color="#ff6f61")
+            ax_line.set_ylim(0, 1)
+            ax_line.set_facecolor("#1a1a1a")
+            ax_line.set_title("Average Confidence Convergence", color="#e5e5e5")
+            ax_line.set_xlabel("Iteration", color="#c0c0c0")
+            ax_line.set_ylabel("Confidence", color="#c0c0c0")
+            line_placeholder.pyplot(fig_line)
 
-            fig, ax = plt.subplots(figsize=(5,5))
-            sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="mako", ax=ax)
-            ax.set_title(f"Difficulty Heatmap (Step {step+1})", color="#e5e5e5")
-            heatmap_placeholder.pyplot(fig)
+       
+            fig_heat, ax_heat = plt.subplots(figsize=(5,5))
+            sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="mako", ax=ax_heat)
+            ax_heat.set_title(f"Difficulty Heatmap (Step {step+1})", color="#e5e5e5")
+            heatmap_placeholder.pyplot(fig_heat)
+
             time.sleep(0.7)
         st.success("Target difficulty stabilized ✅")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Dark ML Visualization Dashboard ✨</center>", unsafe_allow_html=True)
+st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Made by SANYAM KATOCH ✨</center>", unsafe_allow_html=True)
