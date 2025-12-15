@@ -12,38 +12,41 @@ st.set_page_config(page_title="ML CAPTCHA Refinement", page_icon="🔐", layout=
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    background-size: 400% 400%;
-    animation: gradientFlow 25s ease infinite;
+    position: relative;
+    overflow: hidden;
+    background: #0f2027;
     color: #e5e5e5;
 }
 
-@keyframes gradientFlow {
-    0% { background-position: 0% 0%; }
-    25% { background-position: 50% 50%; }
-    50% { background-position: 100% 100%; }
-    75% { background-position: 50% 50%; }
-    100% { background-position: 0% 0%; }
+/* Animated gradient background layer */
+.stApp::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right:0; bottom:0;
+    background: linear-gradient(45deg, #0f2027, #203a43, #2c5364, #1f1c2c);
+    background-size: 600% 600%;
+    animation: bgGradient 30s ease infinite;
+    z-index: -2;
 }
 
-.block-container {
-    padding-top: 0rem;
-    padding-bottom: 1rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+/* Gradient animation */
+@keyframes bgGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
+/* Particle layer */
 .particle {
     position: fixed;
     width: 6px;
     height: 6px;
     border-radius: 50%;
     animation: float 20s infinite linear;
-    z-index: 0;
+    z-index: -1;
     box-shadow: 0 0 12px rgba(255,255,255,0.25);
     opacity: 0.7;
 }
-
 .particle:nth-child(2) { width: 8px; height: 8px; animation-duration: 25s; }
 .particle:nth-child(3) { width: 5px; height: 5px; animation-duration: 15s; }
 .particle:nth-child(4) { width: 10px; height: 10px; animation-duration: 30s; }
@@ -54,6 +57,7 @@ st.markdown("""
     100% { transform: translateY(-10vh) translateX(-10px) scale(0.9); opacity:0.5; }
 }
 
+/* Glass panels */
 .glass {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(18px);
@@ -63,6 +67,7 @@ st.markdown("""
     box-shadow: 0 8px 32px rgba(0,0,0,0.6);
 }
 
+/* Hero title with animated glow */
 .hero-title {
     font-size: 50px;
     font-weight: 800;
@@ -71,27 +76,26 @@ st.markdown("""
     color: #e5e5e5;
     position: relative;
 }
-
 .hero-title::after {
     content: '';
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 200px;
-    height: 60px;
+    width: 250px;
+    height: 80px;
     background: radial-gradient(circle, rgba(255,255,255,0.15), transparent);
     transform: translate(-50%, -50%) scale(1);
     border-radius: 50%;
     animation: pulse 3s infinite ease-in-out;
     z-index: -1;
 }
-
 @keyframes pulse {
     0% { transform: translate(-50%, -50%) scale(1); opacity:0.4; }
     50% { transform: translate(-50%, -50%) scale(1.3); opacity:0.7; }
     100% { transform: translate(-50%, -50%) scale(1); opacity:0.4; }
 }
 
+/* Hero subtitle */
 .hero-sub {
     text-align: center;
     color: #c0c0c0;
@@ -99,6 +103,7 @@ st.markdown("""
     font-size: 18px;
 }
 
+/* Buttons */
 .stButton button {
     background: linear-gradient(135deg, #1f1c2c, #928dab);
     border-radius: 14px;
@@ -107,10 +112,17 @@ st.markdown("""
     color: #fff;
     transition: all 0.3s ease;
 }
-
 .stButton button:hover {
     transform: scale(1.05);
     box-shadow: 0 0 15px rgba(255,255,255,0.3);
+}
+
+/* Container padding adjustments */
+.block-container {
+    padding-top: 0rem;
+    padding-bottom: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -199,4 +211,5 @@ with col3:
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Made by SANYAM KATOCH ✨</center>", unsafe_allow_html=True)
+
 
