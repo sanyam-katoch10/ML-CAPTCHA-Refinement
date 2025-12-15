@@ -68,7 +68,7 @@ with col3:
     st.markdown("### 🔁 CAPTCHA Refinement")
     target = st.selectbox("Target Difficulty",["easy","medium","hard"])
     refine_btn = st.button("✨ Refine CAPTCHA")
-    auto = st.button("🚀 Start Auto-Refinement")
+    start_refinement = st.button("🚀 Start Auto-Refinement")
     line_placeholder = st.empty()
     heatmap_placeholder = st.empty()
 
@@ -79,7 +79,7 @@ with col3:
         img.save(buf,format="PNG")
         st.download_button("⬇️ Download CAPTCHA",data=buf.getvalue(),file_name=f"{text}_{predicted}.png",mime="image/png",use_container_width=True)
 
-    if auto:
+    if start_refinement:
         grid_size = 4
         confidences = []
         difficulties = np.zeros((grid_size,grid_size))
@@ -116,4 +116,4 @@ with col3:
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Dark ML Visualization Dashboard ✨</center>", unsafe_allow_html=True)
+st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Made by SANYAM KATOCH ✨</center>", unsafe_allow_html=True)
