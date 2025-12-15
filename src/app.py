@@ -173,40 +173,46 @@ with col3:
 
     # Auto refinement with convergence graph & heatmap
     if auto:
-        grid_size = 5
-        confidences = []
+    grid_size = 5
+    confidences = []
+
+    line_placeholder = st.empty()
+    heatmap_placeholder = st.empty()
+
+    for step in range(6):
+        # Create difficulty grid
         difficulties = np.zeros((grid_size, grid_size))
+        for i in range(grid_size):
+            for j in range(grid_size):
+                img, text, pred = refine(target)
+                _, conf = predict(img)
+                difficulties[i, j] = conf
 
-        for step in range(6):
-            for i in range(grid_size):
-                for j in range(grid_size):
-                    img, text, pred = refine(target)
-                    _, conf = predict(img)
-                    difficulties[i, j] = conf
+        # Track average confidence
+        avg_conf = difficulties.mean()
+        confidences.append(avg_conf)
 
-            avg_conf = difficulties.mean()
-            confidences.append(avg_conf)
+        # --- Line Plot: Confidence Convergence ---
+        fig_line, ax_line = plt.subplots()
+        ax_line.plot(confidences, marker='o', color="#ff6f61", linewidth=2)
+        ax_line.set_ylim(0, 1)
+        ax_line.set_facecolor("#1a1a1a")
+        ax_line.set_title("Average Confidence Convergence", color="#e0e0e0")
+        ax_line.set_xlabel("Iteration", color="#b0b0b0")
+        ax_line.set_ylabel("Confidence", color="#b0b0b0")
+        line_placeholder.pyplot(fig_line)
 
-            # Line plot
-            fig_line, ax_line = plt.subplots()
-            ax_line.plot(confidences, marker='o', color="#ff6f61", linewidth=2)
-            ax_line.set_ylim(0, 1)
-            ax_line.set_facecolor("#1a1a1a")
-            ax_line.set_title("Average Confidence Convergence", color="#e0e0e0")
-            ax_line.set_xlabel("Iteration", color="#b0b0b0")
-            ax_line.set_ylabel("Confidence", color="#b0b0b0")
-            line_placeholder.pyplot(fig_line)
+        # --- Heatmap: Difficulty Grid ---
+        fig_heat, ax_heat = plt.subplots(figsize=(5,5))
+        sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="mako", ax=ax_heat)
+        ax_heat.set_title(f"Difficulty Heatmap (Step {step+1})", color="#e0e0e0")
+        heatmap_placeholder.pyplot(fig_heat)
 
-            # Heatmap
-            fig_heat, ax_heat = plt.subplots(figsize=(5,5))
-            sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="mako", ax=ax_heat)
-            ax_heat.set_title(f"Difficulty Heatmap (Step {step+1})", color="#e0e0e0")
-            heatmap_placeholder.pyplot(fig_heat)
+        # Slight delay for visualization
+        time.sleep(0.7)
 
-            time.sleep(0.7)
-        st.success("Target difficulty stabilized ✅")
+    st.success("Target difficulty stabilized ✅")
 
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # -----------------------------
 # Footer
