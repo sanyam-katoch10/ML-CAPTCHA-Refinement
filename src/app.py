@@ -13,37 +13,55 @@ st.set_page_config(page_title="ML CAPTCHA Refinement", page_icon="🔐", layout=
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    background-size: 400% 400%;
-    animation: gradientFlow 25s ease infinite;
+    background: #1c1c1c;
     color: #e5e5e5;
+    position: relative;
+    overflow: hidden;
 }
-@keyframes gradientFlow {
-    0% { background-position: 0% 0%; }
-    25% { background-position: 50% 50%; }
-    50% { background-position: 100% 100%; }
-    75% { background-position: 50% 50%; }
-    100% { background-position: 0% 0%; }
-}
-.block-container {
-    padding-top: 0rem;
-    padding-bottom: 1rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-}
-.particle {
+
+/* Dark matte animated gradient background */
+#animated-bg {
     position: fixed;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    animation: float 20s infinite linear;
-    z-index: 0;
-    box-shadow: 0 0 8px rgba(255,255,255,0.15);
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    background: linear-gradient(135deg, #1c1c1c, #2a2a2a, #3a3a3a, #2e2e2e);
+    background-size: 600% 600%;
+    animation: bgGradient 40s ease infinite;
+    z-index: -10;
 }
-@keyframes float {
-    from { transform: translateY(100vh); }
-    to { transform: translateY(-10vh); }
+
+/* Moving subtle diagonal light streaks */
+#light-streaks {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,0.02) 0px,
+        rgba(255,255,255,0.02) 2px,
+        transparent 2px,
+        transparent 8px
+    );
+    animation: streakMove 30s linear infinite;
+    z-index: -9;
 }
+
+@keyframes bgGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes streakMove {
+    0% { transform: translate(0%,0%) rotate(0deg); }
+    100% { transform: translate(50%,50%) rotate(0deg); }
+}
+
+/* Glass panels */
 .glass {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(18px);
@@ -52,28 +70,70 @@ st.markdown("""
     border: 1px solid rgba(255,255,255,0.12);
     box-shadow: 0 8px 32px rgba(0,0,0,0.6);
 }
+
+/* Hero title */
 .hero-title {
     font-size: 50px;
     font-weight: 800;
     text-align: center;
     margin-top: 0px;
     color: #e5e5e5;
+    position: relative;
 }
+.hero-title::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 220px;
+    height: 70px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
+    transform: translate(-50%, -50%) scale(1);
+    border-radius: 50%;
+    animation: pulse 4s infinite ease-in-out;
+    z-index: -1;
+}
+@keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(1); opacity:0.3; }
+    50% { transform: translate(-50%, -50%) scale(1.3); opacity:0.6; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity:0.3; }
+}
+
+/* Hero subtitle */
 .hero-sub {
     text-align: center;
-    color: #c0c0c0;
+    color: #b0b0b0;
     margin-bottom: 40px;
     font-size: 18px;
 }
+
+/* Buttons */
 .stButton button {
-    background: linear-gradient(135deg, #1f1c2c, #928dab);
+    background: linear-gradient(135deg, #2b2b2b, #4a4a4a);
     border-radius: 14px;
     font-weight: 600;
     border: none;
     color: #fff;
+    transition: all 0.3s ease;
+}
+.stButton button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+}
+
+/* Container padding adjustments */
+.block-container {
+    padding-top: 0rem;
+    padding-bottom: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
 }
 </style>
+
+<div id="animated-bg"></div>
+<div id="light-streaks"></div>
 """, unsafe_allow_html=True)
+
 
 particle_colors = ["#4facfe", "#00f2fe", "#3a7bd5"]  
 for _ in range(25):
@@ -142,3 +202,4 @@ with col3:
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Dark ML Visualization Dashboard ✨</center>", unsafe_allow_html=True)
+
