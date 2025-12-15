@@ -35,10 +35,10 @@ st.markdown("""
     position: fixed;
     width: 6px;
     height: 6px;
-    background: rgba(255,255,255,0.15);
     border-radius: 50%;
     animation: float 20s infinite linear;
     z-index: 0;
+    box-shadow: 0 0 8px rgba(255,255,255,0.15);
 }
 @keyframes float {
     from { transform: translateY(100vh); }
@@ -75,10 +75,12 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+particle_colors = ["#4facfe", "#00f2fe", "#3a7bd5"]  
 for _ in range(25):
     left = random.randint(0, 100)
     delay = random.randint(0, 20)
-    st.markdown(f"<div class='particle' style='left:{left}%; animation-delay:{delay}s'></div>", unsafe_allow_html=True)
+    color = random.choice(particle_colors)
+    st.markdown(f"<div class='particle' style='left:{left}%; animation-delay:{delay}s; background:{color}; box-shadow:0 0 10px {color}'></div>", unsafe_allow_html=True)
 
 st.markdown('<h1 class="hero-title">🔐 ML CAPTCHA Refinement</h1>', unsafe_allow_html=True)
 st.markdown('<div class="hero-sub">Self-optimizing CAPTCHA system with real-time ML feedback</div>', unsafe_allow_html=True)
@@ -110,7 +112,7 @@ with col3:
     target = st.selectbox("Target Difficulty", ["easy", "medium", "hard"])
     refine_btn = st.button("✨ Refine CAPTCHA")
     auto = st.button("🚀 Start Auto-Refinement")
-    heatmap_btn = st.button("📊 Show Difficulty Heatmap")
+    heatmap_placeholder = st.empty()
     chart_placeholder = st.empty()
 
     if refine_btn:
@@ -121,34 +123,22 @@ with col3:
         st.download_button("⬇️ Download CAPTCHA", data=buf.getvalue(), file_name=f"{text}_{predicted}.png", mime="image/png", use_container_width=True)
 
     if auto:
-        confidences = []
+        grid_size = 5
+        difficulties = np.zeros((grid_size, grid_size))
         for step in range(6):
-            img, text, pred = refine(target)
-            _, conf = predict(img)
-            confidences.append(conf)
-            fig, ax = plt.subplots()
-            ax.plot(confidences, marker='o', color="#ff6f61")
-            ax.set_ylim(0, 1)
-            ax.set_facecolor("#1a1a1a")
-            ax.set_title("Confidence Convergence", color="#e5e5e5")
-            ax.set_xlabel("Iteration", color="#c0c0c0")
-            ax.set_ylabel("Confidence", color="#c0c0c0")
-            chart_placeholder.pyplot(fig)
+            for i in range(grid_size):
+                for j in range(grid_size):
+                    img, text, pred = refine(target)
+                    _, conf = predict(img)
+                    difficulties[i, j] = conf
+
+            fig, ax = plt.subplots(figsize=(5,5))
+            sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="mako", ax=ax)
+            ax.set_title(f"Difficulty Heatmap (Step {step+1})", color="#e5e5e5")
+            heatmap_placeholder.pyplot(fig)
             time.sleep(0.7)
         st.success("Target difficulty stabilized ✅")
 
-    if heatmap_btn:
-        grid_size = 5
-        difficulties = np.zeros((grid_size, grid_size))
-        for i in range(grid_size):
-            for j in range(grid_size):
-                img, text = generate_captcha(noise, dist, clutter)
-                _, conf = predict(img)
-                difficulties[i, j] = conf
-        fig, ax = plt.subplots(figsize=(5,5))
-        sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="mako", ax=ax)
-        ax.set_title("Difficulty Heatmap", color="#e5e5e5")
-        st.pyplot(fig)
     st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Made by SANYAM KATOCH✨</center>", unsafe_allow_html=True)
+st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Dark ML Visualization Dashboard ✨</center>", unsafe_allow_html=True)
