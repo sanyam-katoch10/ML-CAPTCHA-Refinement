@@ -100,7 +100,7 @@ with col3:
             ax_line.set_title("Average Confidence Convergence", color="#e5e5e5")
             ax_line.set_xlabel("Iteration", color="#c0c0c0")
             ax_line.set_ylabel("Confidence", color="#c0c0c0")
-            ax_line.tick_params(colors="#c0c0c0")
+            ax_line.tick_params(colors="#d1d5db")
             line_placeholder.pyplot(fig_line, clear_figure=True)
             plt.close(fig_line)
 
@@ -119,5 +119,6 @@ with col3:
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Made by SANYAM KATOCH ✨</center>", unsafe_allow_html=True)
+
 
 
