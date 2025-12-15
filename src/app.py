@@ -10,15 +10,73 @@ import random
 
 st.set_page_config(page_title="ML CAPTCHA Refinement", page_icon="🔐", layout="wide")
 
-st.markdown(""" <style> .stApp { background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1cb5e0); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: white; } @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } } .particle { position: fixed; width: 6px; height: 6px; background: rgba(255,255,255,0.5); border-radius: 50%; animation: float 20s infinite linear; z-index: 0; } @keyframes float { from { transform: translateY(100vh); } to { transform: translateY(-10vh); } } .glass { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(18px); border-radius: 20px; padding: 25px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.4); } .hero-title { font-size: 50px; font-weight: 800; text-align: center; } .hero-sub { text-align: center; color: #d1d5db; margin-bottom: 40px; font-size: 18px; } .stButton button { background: linear-gradient(135deg, #00f2fe, #4facfe); border-radius: 14px; font-weight: 600; border: none; """, unsafe_allow_html=True)
-
+st.markdown("""
+<style>
+.stApp {
+    background: linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80, #facc15);
+    background-size: 800% 800%;
+    animation: animatedGradient 20s ease infinite;
+    color: white;
+}
+@keyframes animatedGradient {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+}
+.block-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+.particle {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 50%;
+    animation: float 20s infinite linear;
+    z-index: 0;
+}
+@keyframes float {
+    from { transform: translateY(100vh); }
+    to { transform: translateY(-10vh); }
+}
+.glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    border-radius: 20px;
+    padding: 25px;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.hero-title {
+    font-size: 50px;
+    font-weight: 800;
+    text-align: center;
+    margin-top: 0px;
+}
+.hero-sub {
+    text-align: center;
+    color: #d1d5db;
+    margin-bottom: 40px;
+    font-size: 18px;
+}
+.stButton button {
+    background: linear-gradient(135deg, #00f2fe, #4facfe);
+    border-radius: 14px;
+    font-weight: 600;
+    border: none;
+}
+</style>
+""", unsafe_allow_html=True)
 
 for _ in range(25):
     left = random.randint(0, 100)
     delay = random.randint(0, 20)
     st.markdown(f"<div class='particle' style='left:{left}%; animation-delay:{delay}s'></div>", unsafe_allow_html=True)
 
-st.markdown('<div class="hero-title">🔐 ML CAPTCHA Refinement</div>', unsafe_allow_html=True)
+st.markdown('<h1 class="hero-title">🔐 ML CAPTCHA Refinement</h1>', unsafe_allow_html=True)
 st.markdown('<div class="hero-sub">Self-optimizing CAPTCHA system with real-time ML feedback</div>', unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns([1.2, 1.8, 1.4])
@@ -77,13 +135,11 @@ with col3:
     if heatmap_btn:
         grid_size = 5
         difficulties = np.zeros((grid_size, grid_size))
-        texts = []
         for i in range(grid_size):
             for j in range(grid_size):
                 img, text = generate_captcha(noise, dist, clutter)
                 _, conf = predict(img)
                 difficulties[i, j] = conf
-                texts.append(text)
         fig, ax = plt.subplots(figsize=(5,5))
         sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
         ax.set_title("Difficulty Heatmap")
