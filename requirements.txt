@@ -6,3 +6,4 @@ opencv-python-headless
 captcha
 scikit-learn
 matplotlib
+seaborn 
