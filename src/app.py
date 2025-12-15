@@ -3,6 +3,8 @@ from io import BytesIO
 from generator import generate_captcha
 from refine_m import refine, predict
 import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 import time
 import random
 
@@ -97,6 +99,7 @@ with col3:
     target = st.selectbox("Target Difficulty", ["easy", "medium", "hard"])
     refine_btn = st.button("✨ Refine CAPTCHA")
     auto = st.button("🚀 Start Auto-Refinement")
+    heatmap_btn = st.button("📊 Show Difficulty Heatmap")
     chart_placeholder = st.empty()
 
     if refine_btn:
@@ -121,6 +124,21 @@ with col3:
             chart_placeholder.pyplot(fig)
             time.sleep(0.7)
         st.success("Target difficulty stabilized ✅")
+
+    if heatmap_btn:
+        grid_size = 5
+        difficulties = np.zeros((grid_size, grid_size))
+        texts = []
+        for i in range(grid_size):
+            for j in range(grid_size):
+                img, text = generate_captcha(noise, dist, clutter)
+                _, conf = predict(img)
+                difficulties[i, j] = conf
+                texts.append(text)
+        fig, ax = plt.subplots(figsize=(5,5))
+        sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="coolwarm", ax=ax)
+        ax.set_title("Difficulty Heatmap")
+        st.pyplot(fig)
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Research-grade ML Visualization Dashboard ✨</center>", unsafe_allow_html=True)
