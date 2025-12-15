@@ -9,47 +9,65 @@ import time
 
 st.set_page_config(page_title="ML CAPTCHA Refinement", page_icon="🔐", layout="wide")
 
+# --- Background and animations ---
 st.markdown("""
 <style>
-.stApp {
-    position: relative;
-    overflow: hidden;
-    background: #1c1c1c;
-    color: #e5e5e5;
-}
-
-/* Animated dark matte gradient background layer */
-.stApp::before {
-    content: "";
+/* Full dark animated gradient background */
+#animated-bg {
     position: fixed;
-    top: 0; left: 0; right:0; bottom:0;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
     background: linear-gradient(135deg, #1c1c1c, #2a2a2a, #3a3a3a, #2e2e2e);
     background-size: 600% 600%;
     animation: bgGradient 40s ease infinite;
-    z-index: -2;
+    z-index: -10;
 }
 
-/* Gradient animation for dark shades */
-@keyframes bgGradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+/* Moving diagonal light streaks */
+#light-streaks {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,0.02) 0px,
+        rgba(255,255,255,0.02) 2px,
+        transparent 2px,
+        transparent 8px
+    );
+    animation: streakMove 30s linear infinite;
+    z-index: -9;
 }
 
-/* Particle layer */
+/* Floating particles */
 .particle {
     position: fixed;
     width: 6px;
     height: 6px;
     border-radius: 50%;
     animation: float 25s infinite linear;
-    z-index: -1;
+    z-index: -8;
     box-shadow: 0 0 12px rgba(255,255,255,0.15);
     opacity: 0.6;
 }
 .particle:nth-child(2) { width: 8px; height: 8px; animation-duration: 30s; }
 .particle:nth-child(3) { width: 5px; height: 5px; animation-duration: 20s; }
 .particle:nth-child(4) { width: 10px; height: 10px; animation-duration: 35s; }
+
+@keyframes bgGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes streakMove {
+    0% { transform: translate(0%,0%) rotate(0deg); }
+    100% { transform: translate(50%,50%) rotate(0deg); }
+}
 
 @keyframes float {
     0% { transform: translateY(100vh) translateX(0) scale(0.8); opacity:0.4; }
@@ -67,7 +85,7 @@ st.markdown("""
     box-shadow: 0 8px 32px rgba(0,0,0,0.6);
 }
 
-/* Hero title with subtle pulse */
+/* Hero title */
 .hero-title {
     font-size: 50px;
     font-weight: 800;
@@ -125,14 +143,20 @@ st.markdown("""
     padding-right: 2rem;
 }
 </style>
+
+<div id="animated-bg"></div>
+<div id="light-streaks"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
 """, unsafe_allow_html=True)
 
-
-
-st.markdown('<div class="banner"><div></div><div></div><div></div></div>', unsafe_allow_html=True)
+# --- Header ---
 st.markdown('<h1 class="hero-title">🔐 ML CAPTCHA Refinement</h1>', unsafe_allow_html=True)
 st.markdown('<div class="hero-sub">Self-optimizing CAPTCHA system with real-time ML feedback</div>', unsafe_allow_html=True)
 
+# --- Layout columns ---
 col1, col2, col3 = st.columns([1.2,1.8,1.4])
 
 with col1:
@@ -208,10 +232,6 @@ with col3:
 
             time.sleep(0.5)
         st.success("Target difficulty stabilized ✅")
-
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Made by SANYAM KATOCH ✨</center>", unsafe_allow_html=True)
-
-
-
