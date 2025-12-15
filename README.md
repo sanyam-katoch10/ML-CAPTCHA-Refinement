@@ -6,8 +6,7 @@
 
 <div align="center">
   <img 
-    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HS...CYnHME8ATwJTyTRp47/YkpCOZV03eQcCILVcA5MPHu9XHAMYsGq99J0q+X..."
-    width="120"
+    <img src="pics/s.png" width="600"/
   />
 </div>
 
