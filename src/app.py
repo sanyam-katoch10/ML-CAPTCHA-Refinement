@@ -152,11 +152,12 @@ with col3:
             avg_conf = difficulties.mean()
             confidences.append(avg_conf)
     
-            # Update convergence line smoothly
+                       # Update convergence line
             line_plot.set_data(range(len(confidences)), confidences)
             ax_line.set_xlim(0, max(5,len(confidences)))
-            line_placeholder.pyplot(fig_line, clear_figure=True)
-    
+            line_placeholder.pyplot(fig_line)  # remove clear_figure
+            plt.close(fig_line)
+            
             # Update heatmap
             ax_heat.clear()
             hm = sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="coolwarm", square=True, ax=ax_heat)
@@ -164,11 +165,14 @@ with col3:
             cbar.ax.tick_params(color="black", labelcolor="black")
             ax_heat.tick_params(colors="black")
             fig_heat.patch.set_facecolor("white")
-            heatmap_placeholder.pyplot(fig_heat, clear_figure=True)
+            heatmap_placeholder.pyplot(fig_heat)  # remove clear_figure
+            plt.close(fig_heat)
+
     
             time.sleep(0.5)
     
         st.success("Target difficulty stabilized ✅")
 
 st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Made by SANYAM KATOCH ✨</center>", unsafe_allow_html=True)
+
 
