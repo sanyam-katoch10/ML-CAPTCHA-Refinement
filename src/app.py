@@ -7,31 +7,30 @@ import seaborn as sns
 import numpy as np
 import time
 
-# ===================== CONFIG =====================
+# ================= CONFIG =================
 st.set_page_config(
     page_title="ML CAPTCHA Refinement",
     page_icon="🔒",
     layout="wide"
 )
 
-# ===================== CSS =====================
+# ================= CSS =================
 st.markdown("""
 <style>
-/* ===== SHINY DARK BACKGROUND ===== */
+/* ===== SHINY ANIMATED DARK BACKGROUND ===== */
 .stApp {
-    background: radial-gradient(circle at 20% 30%, #0b0c12, #0f101a 70%), 
-                radial-gradient(circle at 80% 70%, #13141c, #0a0b12 70%);
-    background-size: 200% 200%;
-    animation: bgShine 40s ease infinite alternate;
+    background: linear-gradient(45deg, #0c0d12, #10121c, #0e0f15, #14151d);
+    background-size: 400% 400%;
+    animation: gradientShift 30s ease infinite;
     color: #e7e7e7;
 }
 
-@keyframes bgShine {
-    0% {background-position: 0% 0%, 100% 100%;}
-    25% {background-position: 50% 30%, 50% 70%;}
-    50% {background-position: 100% 50%, 0% 50%;}
-    75% {background-position: 50% 70%, 50% 30%;}
-    100% {background-position: 0% 100%, 100% 0%;}
+@keyframes gradientShift {
+    0% {background-position:0% 50%;}
+    25% {background-position:50% 100%;}
+    50% {background-position:100% 50%;}
+    75% {background-position:50% 0%;}
+    100% {background-position:0% 50%;}
 }
 
 /* ===== GLASS CARDS ===== */
@@ -70,22 +69,45 @@ st.markdown("""
     transform: translateY(-2px);
     box-shadow: 0 0 28px rgba(0,200,255,0.6), 0 18px 40px rgba(0,0,0,0.95);
 }
-</style>
 
+/* ===== TOPBAR ===== */
+.topbar {
+    background: linear-gradient(135deg,#1a1c24,#2b2f3a);
+    padding: 18px 30px;
+    border-radius: 18px;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 18px 45px rgba(0,0,0,0.9);
+}
+
+/* ===== SIDEBAR ===== */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg,#0d0f15,#171a23);
+    border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #8b8f9c;
+}
+</style>
 """, unsafe_allow_html=True)
 
-# ===================== TOP BAR =====================
+# ================= TOPBAR =================
 st.markdown(
     "<div class='topbar'>🔒 ML CAPTCHA Refinement <span style='float:right;font-size:16px;'>🟢 Model Online</span></div>",
     unsafe_allow_html=True
 )
 
-# ===================== SIDEBAR =====================
+# ================= SIDEBAR =================
 with st.sidebar:
     st.markdown("## ⚙️ Navigation")
     page = st.radio("", ["📊 Dashboard", "🖼 CAPTCHA Generator", "🔁 Refinement Engine"])
 
-# ===================== DASHBOARD =====================
+# ================= DASHBOARD =================
 if page == "📊 Dashboard":
     st.markdown("## 📊 System Overview")
     c1, c2, c3 = st.columns(3)
@@ -96,7 +118,7 @@ if page == "📊 Dashboard":
     with c3:
         st.markdown("<div class='card'><h3>Model</h3><h2>CNN v1.0</h2></div>", unsafe_allow_html=True)
 
-# ===================== CAPTCHA GENERATOR =====================
+# ================= CAPTCHA GENERATOR =================
 elif page == "🖼 CAPTCHA Generator":
     st.markdown("## 🖼 CAPTCHA Generator")
     left, right = st.columns([1.1, 2])
@@ -110,10 +132,8 @@ elif page == "🖼 CAPTCHA Generator":
         st.markdown("</div>", unsafe_allow_html=True)
 
     with right:
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
         img_slot = st.empty()
         stats_slot = st.empty()
-
         if gen_btn:
             img, text = generate_captcha(noise, distortion, clutter)
             pred, conf = predict(img)
@@ -124,42 +144,17 @@ elif page == "🖼 CAPTCHA Generator":
             **Confidence:** `{conf:.2f}`
             """)
 
-        # Side-by-side static plots in generator
-        p1, p2 = st.columns(2)
-        with p1:
-            st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
-            confs = np.clip(np.cumsum(np.random.normal(0.04, 0.02, 10)), 0, 1)
-            fig1, ax1 = plt.subplots(figsize=(4,3))
-            ax1.plot(confs, marker='o', color='#00d8ff', linewidth=2)
-            ax1.set_ylim(0,1)
-            ax1.set_title("Confidence Convergence", color='#e0e0e0')
-            st.pyplot(fig1)
-            plt.close(fig1)
-            st.markdown("</div>", unsafe_allow_html=True)
-
-        with p2:
-            st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
-            mat = np.random.uniform(0.4, 0.9, (4,4))
-            fig2, ax2 = plt.subplots(figsize=(4,3))
-            sns.heatmap(mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
-            ax2.set_title("Confidence Heatmap", color='#e0e0e0')
-            st.pyplot(fig2)
-            plt.close(fig2)
-            st.markdown("</div>", unsafe_allow_html=True)
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-# ===================== REFINEMENT ENGINE =====================
+# ================= REFINEMENT ENGINE =================
 elif page == "🔁 Refinement Engine":
     st.markdown("## 🔁 Refinement Engine")
     target = st.selectbox("Target Difficulty", ["easy", "medium", "hard"])
     refine_btn = st.button("✨ Refine Once")
     auto_btn = st.button("🚀 Auto-Refine")
 
-    # Single live preview placeholders
+    # placeholders
+    img_slot = st.empty()
     plot_convergence = st.empty()
     plot_heatmap = st.empty()
-    img_slot = st.empty()
 
     if refine_btn:
         img, text, lvl = refine(target)
@@ -179,11 +174,11 @@ elif page == "🔁 Refinement Engine":
                     mat[i,j] = c
             confs.append(mat.mean())
 
-            # Convergence line with glow
+            # Convergence plot with glow
             with plot_convergence:
                 st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
                 fig1, ax1 = plt.subplots(figsize=(4,3))
-                color = f"#00{np.random.randint(150,255):02x}ff"  # dynamic glow
+                color = f"#00{np.random.randint(150,255):02x}ff"
                 ax1.plot(confs, marker='o', color=color, linewidth=2)
                 ax1.set_ylim(0,1)
                 ax1.set_title("Confidence Convergence", color='#e0e0e0')
@@ -194,7 +189,7 @@ elif page == "🔁 Refinement Engine":
             # Heatmap with glow
             with plot_heatmap:
                 st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
-                glow_mat = mat + np.random.uniform(0, 0.05, mat.shape)
+                glow_mat = mat + np.random.uniform(0,0.05,mat.shape)
                 fig2, ax2 = plt.subplots(figsize=(4,3))
                 sns.heatmap(glow_mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
                 ax2.set_title("Confidence Heatmap", color='#e0e0e0')
@@ -206,6 +201,5 @@ elif page == "🔁 Refinement Engine":
 
         st.success("Target difficulty stabilized ✔")
 
-# ===================== FOOTER =====================
+# ================= FOOTER =================
 st.markdown("<div class='footer'>✨ Built by SANYAM KATOCH ✨</div>", unsafe_allow_html=True)
-
