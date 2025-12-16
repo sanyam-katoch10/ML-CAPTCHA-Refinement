@@ -18,7 +18,7 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* ===== DARK SHINY ANIMATED BACKGROUND ===== */
+/* ===== DARK ANIMATED BACKGROUND ===== */
 .stApp {
     background: linear-gradient(
         130deg,
@@ -58,27 +58,20 @@ section[data-testid="stSidebar"] {
     border-right: 1px solid rgba(255,255,255,0.06);
 }
 
-/* ===== CARDS ===== */
+/* ===== GLASS CARDS ===== */
 .card {
-    background: linear-gradient(
-        145deg,
-        rgba(255,255,255,0.09),
-        rgba(255,255,255,0.02)
-    );
+    background: rgba(30,30,35,0.45);
+    backdrop-filter: blur(12px);
     border-radius: 22px;
     padding: 26px;
-    border: 1px solid rgba(255,255,255,0.14);
-    box-shadow:
-        inset 0 1px 1px rgba(255,255,255,0.06),
-        0 25px 60px rgba(0,0,0,0.85);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.85);
     transition: all 0.4s ease;
 }
 
 .card:hover {
     transform: translateY(-6px);
-    box-shadow:
-        inset 0 1px 1px rgba(255,255,255,0.12),
-        0 35px 80px rgba(0,0,0,0.95);
+    box-shadow: 0 35px 80px rgba(0,0,0,0.95), 0 0 18px rgba(255,255,255,0.1);
 }
 
 /* ===== BUTTONS ===== */
@@ -87,48 +80,30 @@ section[data-testid="stSidebar"] {
     padding: 14px 22px;
     font-weight: 700;
     color: #fff;
-    background: linear-gradient(
-        135deg,
-        #2f323c,
-        #8a8f9a,
-        #2f323c
-    );
-    box-shadow:
-        inset 0 1px 2px rgba(255,255,255,0.45),
-        0 10px 26px rgba(0,0,0,0.85);
+    background: linear-gradient(135deg,#2f323c,#8a8f9a,#2f323c);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.45), 0 10px 26px rgba(0,0,0,0.85);
     transition: all 0.35s ease;
 }
 
 .stButton button:hover {
     transform: translateY(-3px);
-    box-shadow:
-        0 0 28px rgba(210,210,210,0.4),
-        0 18px 40px rgba(0,0,0,0.95);
+    box-shadow: 0 0 28px rgba(210,210,255,0.4), 0 18px 40px rgba(0,0,0,0.95);
 }
 
-/* ===== PLOT CONTAINERS ===== */
+/* ===== GLASS PLOT CONTAINERS ===== */
 .plot-card {
-    background: linear-gradient(
-        145deg,
-        rgba(255,255,255,0.06),
-        rgba(255,255,255,0.015)
-    );
-    border-radius: 18px;
+    background: rgba(35,35,42,0.45);
+    backdrop-filter: blur(14px);
+    border-radius: 20px;
     padding: 16px;
     border: 1px solid rgba(255,255,255,0.1);
     box-shadow: 0 18px 45px rgba(0,0,0,0.85);
-    animation: fadeUp 0.9s ease both;
+    transition: all 0.35s ease, box-shadow 0.35s ease;
 }
 
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(12px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.plot-card:hover {
+    box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 24px rgba(180,220,255,0.5);
+    filter: drop-shadow(0 0 12px rgba(180,220,255,0.5));
 }
 
 /* ===== FOOTER ===== */
@@ -166,7 +141,6 @@ if page == "📊 Dashboard":
 # ===================== CAPTCHA GENERATOR =====================
 elif page == "🖼 CAPTCHA Generator":
     st.markdown("## 🖼 CAPTCHA Generator")
-
     left, right = st.columns([1.1, 2])
 
     with left:
@@ -179,7 +153,6 @@ elif page == "🖼 CAPTCHA Generator":
 
     with right:
         st.markdown("<div class='card'>", unsafe_allow_html=True)
-
         img_slot = st.empty()
         stats_slot = st.empty()
 
@@ -193,9 +166,8 @@ elif page == "🖼 CAPTCHA Generator":
             **Confidence:** `{conf:.2f}`
             """)
 
+        # Side-by-side convergence + heatmap (static)
         p1, p2 = st.columns(2)
-
-        # Convergence (same style)
         with p1:
             st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
             confs = np.clip(np.cumsum(np.random.normal(0.04, 0.02, 10)), 0, 1)
@@ -207,7 +179,6 @@ elif page == "🖼 CAPTCHA Generator":
             plt.close(fig1)
             st.markdown("</div>", unsafe_allow_html=True)
 
-        # Heatmap (same style)
         with p2:
             st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
             mat = np.random.uniform(0.4, 0.9, (4,4))
@@ -217,24 +188,21 @@ elif page == "🖼 CAPTCHA Generator":
             st.pyplot(fig2)
             plt.close(fig2)
             st.markdown("</div>", unsafe_allow_html=True)
-
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ===================== REFINEMENT ENGINE =====================
 elif page == "🔁 Refinement Engine":
     st.markdown("## 🔁 Refinement Engine")
-
     target = st.selectbox("Target Difficulty", ["easy", "medium", "hard"])
     refine_btn = st.button("✨ Refine Once")
     auto_btn = st.button("🚀 Auto-Refine")
 
-    plot_slot = st.empty()
-    heat_slot = st.empty()
+    # Placeholders for side-by-side plots
+    plot_slot_c, plot_slot_h = st.columns(2)
 
     if refine_btn:
         img, text, lvl = refine(target)
         st.image(img, use_column_width=True)
-
         buf = BytesIO()
         img.save(buf, format="PNG")
         st.download_button("⬇ Download CAPTCHA", buf.getvalue(), f"{text}_{lvl}.png")
@@ -249,22 +217,28 @@ elif page == "🔁 Refinement Engine":
                     img, _, _ = refine(target)
                     _, c = predict(img)
                     mat[i,j] = c
-
             confs.append(mat.mean())
 
-            fig1, ax1 = plt.subplots()
-            ax1.plot(confs, marker='o')
-            ax1.set_ylim(0,1)
-            plot_slot.pyplot(fig1, clear_figure=True)
-            plt.close(fig1)
+            with plot_slot_c:
+                st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
+                fig1, ax1 = plt.subplots(figsize=(4,3))
+                ax1.plot(confs, marker='o')
+                ax1.set_ylim(0,1)
+                ax1.set_title("Confidence Convergence")
+                st.pyplot(fig1, clear_figure=True)
+                plt.close(fig1)
+                st.markdown("</div>", unsafe_allow_html=True)
 
-            fig2, ax2 = plt.subplots()
-            sns.heatmap(mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
-            heat_slot.pyplot(fig2, clear_figure=True)
-            plt.close(fig2)
+            with plot_slot_h:
+                st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
+                fig2, ax2 = plt.subplots(figsize=(4,3))
+                sns.heatmap(mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
+                ax2.set_title("Confidence Heatmap")
+                st.pyplot(fig2, clear_figure=True)
+                plt.close(fig2)
+                st.markdown("</div>", unsafe_allow_html=True)
 
             time.sleep(0.5)
-
         st.success("Target difficulty stabilized ✔")
 
 # ===================== FOOTER =====================
