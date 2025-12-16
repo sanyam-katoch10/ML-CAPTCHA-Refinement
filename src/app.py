@@ -18,84 +18,124 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* ===== DARK ANIMATED BACKGROUND ===== */
+/* ===== DARK SHINY ANIMATED BACKGROUND ===== */
 .stApp {
     background: linear-gradient(
-        120deg,
-        #0b0c10,
-        #14161c,
-        #1c1f26,
+        130deg,
+        #0a0b0f,
+        #12141b,
+        #1a1d26,
         #0e1016
     );
-    background-size: 400% 400%;
-    animation: darkFlow 28s ease infinite;
-    color: #e6e6e6;
+    background-size: 500% 500%;
+    animation: darkShift 35s ease infinite;
+    color: #e7e7e7;
 }
 
-@keyframes darkFlow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+@keyframes darkShift {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
 }
 
 /* ===== TOP BAR ===== */
 .topbar {
-    background: linear-gradient(135deg,#1c1e26,#2a2d38);
+    background: linear-gradient(135deg,#1a1c24,#2b2f3a);
     padding: 18px 30px;
     border-radius: 18px;
     font-size: 26px;
     font-weight: 800;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.8);
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.08),
+        0 18px 45px rgba(0,0,0,0.9);
     margin-bottom: 20px;
+    transition: all 0.4s ease;
 }
 
 /* ===== SIDEBAR ===== */
 section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg,#0f1117,#181b23);
+    background: linear-gradient(180deg,#0d0f15,#171a23);
+    border-right: 1px solid rgba(255,255,255,0.06);
 }
 
 /* ===== CARDS ===== */
 .card {
     background: linear-gradient(
         145deg,
-        rgba(255,255,255,0.08),
+        rgba(255,255,255,0.09),
         rgba(255,255,255,0.02)
     );
-    border-radius: 20px;
-    padding: 24px;
-    border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.75);
-    transition: all 0.35s ease;
+    border-radius: 22px;
+    padding: 26px;
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.06),
+        0 25px 60px rgba(0,0,0,0.85);
+    transition: all 0.4s ease;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 28px 60px rgba(0,0,0,0.9);
+    transform: translateY(-6px);
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.12),
+        0 35px 80px rgba(0,0,0,0.95);
 }
 
 /* ===== BUTTONS ===== */
 .stButton button {
-    border-radius: 16px;
-    padding: 14px 20px;
+    border-radius: 18px;
+    padding: 14px 22px;
     font-weight: 700;
-    background: linear-gradient(135deg,#3d3f46,#8c8f9a,#3d3f46);
-    color: white;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.35),
-                0 8px 22px rgba(0,0,0,0.8);
-    transition: all 0.3s ease;
+    color: #fff;
+    background: linear-gradient(
+        135deg,
+        #2f323c,
+        #8a8f9a,
+        #2f323c
+    );
+    box-shadow:
+        inset 0 1px 2px rgba(255,255,255,0.45),
+        0 10px 26px rgba(0,0,0,0.85);
+    transition: all 0.35s ease;
 }
 
 .stButton button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 0 22px rgba(220,220,220,0.35),
-                0 14px 34px rgba(0,0,0,0.9);
+    box-shadow:
+        0 0 28px rgba(210,210,210,0.4),
+        0 18px 40px rgba(0,0,0,0.95);
+}
+
+/* ===== PLOT CONTAINERS ===== */
+.plot-card {
+    background: linear-gradient(
+        145deg,
+        rgba(255,255,255,0.06),
+        rgba(255,255,255,0.015)
+    );
+    border-radius: 18px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.85);
+    animation: fadeUp 0.9s ease both;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ===== FOOTER ===== */
 .footer {
     text-align: center;
     margin-top: 40px;
-    color: #8a8d98;
+    color: #8b8f9c;
 }
 
 </style>
@@ -115,7 +155,6 @@ with st.sidebar:
 # ===================== DASHBOARD =====================
 if page == "📊 Dashboard":
     st.markdown("## 📊 System Overview")
-
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown("<div class='card'><h3>Avg Confidence</h3><h2>0.76</h2></div>", unsafe_allow_html=True)
@@ -130,7 +169,6 @@ elif page == "🖼 CAPTCHA Generator":
 
     left, right = st.columns([1.1, 2])
 
-    # ---- LEFT: CONTROLS ----
     with left:
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         noise = st.slider("Noise", 0.0, 1.0, 0.25)
@@ -139,20 +177,15 @@ elif page == "🖼 CAPTCHA Generator":
         gen_btn = st.button("🎲 Generate CAPTCHA")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # ---- RIGHT: PREVIEW + VISUALS ----
     with right:
         st.markdown("<div class='card'>", unsafe_allow_html=True)
 
         img_slot = st.empty()
         stats_slot = st.empty()
 
-        # ---- PLACEHOLDER VISUALS ----
-        v1, v2 = st.columns(2)
-
         if gen_btn:
             img, text = generate_captcha(noise, distortion, clutter)
             pred, conf = predict(img)
-
             img_slot.image(img, use_column_width=True)
             stats_slot.markdown(f"""
             **Text:** `{text}`  
@@ -160,22 +193,30 @@ elif page == "🖼 CAPTCHA Generator":
             **Confidence:** `{conf:.2f}`
             """)
 
-        # ---- STATIC CONVERGENCE ----
-        dummy_conf = np.clip(np.cumsum(np.random.normal(0.03, 0.02, 10)), 0, 1)
-        fig1, ax1 = plt.subplots(figsize=(4,3))
-        ax1.plot(dummy_conf, marker='o')
-        ax1.set_ylim(0,1)
-        ax1.set_title("Confidence Convergence")
-        v1.pyplot(fig1)
-        plt.close(fig1)
+        p1, p2 = st.columns(2)
 
-        # ---- STATIC HEATMAP ----
-        dummy_mat = np.random.uniform(0.4, 0.9, (4,4))
-        fig2, ax2 = plt.subplots(figsize=(4,3))
-        sns.heatmap(dummy_mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
-        ax2.set_title("Confidence Heatmap")
-        v2.pyplot(fig2)
-        plt.close(fig2)
+        # Convergence (same style)
+        with p1:
+            st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
+            confs = np.clip(np.cumsum(np.random.normal(0.04, 0.02, 10)), 0, 1)
+            fig1, ax1 = plt.subplots(figsize=(4,3))
+            ax1.plot(confs, marker='o')
+            ax1.set_ylim(0,1)
+            ax1.set_title("Confidence Convergence")
+            st.pyplot(fig1)
+            plt.close(fig1)
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        # Heatmap (same style)
+        with p2:
+            st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
+            mat = np.random.uniform(0.4, 0.9, (4,4))
+            fig2, ax2 = plt.subplots(figsize=(4,3))
+            sns.heatmap(mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
+            ax2.set_title("Confidence Heatmap")
+            st.pyplot(fig2)
+            plt.close(fig2)
+            st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown("</div>", unsafe_allow_html=True)
 
