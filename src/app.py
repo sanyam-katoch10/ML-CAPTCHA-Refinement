@@ -18,15 +18,9 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* ===== ANIMATED DARK BACKGROUND ===== */
+/* ===== ANIMATED DARK GRADIENT BACKGROUND ===== */
 .stApp {
-    background: linear-gradient(
-        135deg,
-        #0a0b0f,
-        #10121a,
-        #14161f,
-        #0e1016
-    );
+    background: linear-gradient(135deg, #0a0b0f, #10121a, #14161f, #0e1016);
     background-size: 400% 400%;
     animation: bgShine 30s ease infinite;
     color: #e7e7e7;
@@ -47,11 +41,8 @@ st.markdown("""
     border-radius: 18px;
     font-size: 26px;
     font-weight: 800;
-    box-shadow:
-        inset 0 1px 1px rgba(255,255,255,0.08),
-        0 18px 45px rgba(0,0,0,0.9);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 18px 45px rgba(0,0,0,0.9);
     margin-bottom: 20px;
-    transition: all 0.4s ease;
 }
 
 /* ===== SIDEBAR ===== */
@@ -103,7 +94,6 @@ section[data-testid="stSidebar"] {
     margin-top: 40px;
     color: #8b8f9c;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -157,27 +147,29 @@ elif page == "🖼 CAPTCHA Generator":
             **Confidence:** `{conf:.2f}`
             """)
 
-        # Side-by-side plots (static in generator)
+        # Side-by-side static plots in generator
         p1, p2 = st.columns(2)
         with p1:
             st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
             confs = np.clip(np.cumsum(np.random.normal(0.04, 0.02, 10)), 0, 1)
             fig1, ax1 = plt.subplots(figsize=(4,3))
-            ax1.plot(confs, marker='o')
+            ax1.plot(confs, marker='o', color='#00d8ff', linewidth=2)
             ax1.set_ylim(0,1)
-            ax1.set_title("Confidence Convergence")
+            ax1.set_title("Confidence Convergence", color='#e0e0e0')
             st.pyplot(fig1)
             plt.close(fig1)
             st.markdown("</div>", unsafe_allow_html=True)
+
         with p2:
             st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
             mat = np.random.uniform(0.4, 0.9, (4,4))
             fig2, ax2 = plt.subplots(figsize=(4,3))
             sns.heatmap(mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
-            ax2.set_title("Confidence Heatmap")
+            ax2.set_title("Confidence Heatmap", color='#e0e0e0')
             st.pyplot(fig2)
             plt.close(fig2)
             st.markdown("</div>", unsafe_allow_html=True)
+
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ===================== REFINEMENT ENGINE =====================
@@ -190,10 +182,11 @@ elif page == "🔁 Refinement Engine":
     # Single live preview placeholders
     plot_convergence = st.empty()
     plot_heatmap = st.empty()
+    img_slot = st.empty()
 
     if refine_btn:
         img, text, lvl = refine(target)
-        st.image(img, use_column_width=True)
+        img_slot.image(img, use_column_width=True)
         buf = BytesIO()
         img.save(buf, format="PNG")
         st.download_button("⬇ Download CAPTCHA", buf.getvalue(), f"{text}_{lvl}.png")
@@ -209,24 +202,26 @@ elif page == "🔁 Refinement Engine":
                     mat[i,j] = c
             confs.append(mat.mean())
 
-            # Update live convergence plot
+            # Convergence line with glow
             with plot_convergence:
                 st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
                 fig1, ax1 = plt.subplots(figsize=(4,3))
-                ax1.plot(confs, marker='o')
+                color = f"#00{np.random.randint(150,255):02x}ff"  # dynamic glow
+                ax1.plot(confs, marker='o', color=color, linewidth=2)
                 ax1.set_ylim(0,1)
-                ax1.set_title("Confidence Convergence")
-                st.pyplot(fig1, clear_figure=True)
+                ax1.set_title("Confidence Convergence", color='#e0e0e0')
+                st.pyplot(fig1)
                 plt.close(fig1)
                 st.markdown("</div>", unsafe_allow_html=True)
 
-            # Update live heatmap
+            # Heatmap with glow
             with plot_heatmap:
                 st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
+                glow_mat = mat + np.random.uniform(0, 0.05, mat.shape)
                 fig2, ax2 = plt.subplots(figsize=(4,3))
-                sns.heatmap(mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
-                ax2.set_title("Confidence Heatmap")
-                st.pyplot(fig2, clear_figure=True)
+                sns.heatmap(glow_mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
+                ax2.set_title("Confidence Heatmap", color='#e0e0e0')
+                st.pyplot(fig2)
                 plt.close(fig2)
                 st.markdown("</div>", unsafe_allow_html=True)
 
