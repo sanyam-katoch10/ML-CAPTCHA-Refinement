@@ -6,174 +6,217 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import time
-import random
 
-st.set_page_config(page_title="ML CAPTCHA Refinement", page_icon="🔐", layout="wide")
+# ---------------- CONFIG ----------------
+st.set_page_config(
+    page_title="ML CAPTCHA Refinement",
+    page_icon="🔒",
+    layout="wide"
+)
 
+# ---------------- CSS ----------------
 st.markdown("""
 <style>
+
+/* ===== GLOBAL BACKGROUND ===== */
 .stApp {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    background-size: 400% 400%;
-    animation: gradientFlow 25s ease infinite;
-    color: #e5e5e5;
+    background: radial-gradient(circle at top left, #2e2e2e, #121212, #0b0b0b);
+    background-size: 200% 200%;
+    animation: chromeFlow 20s ease infinite;
+    color: #e6e6e6;
 }
-@keyframes gradientFlow {
+
+@keyframes chromeFlow {
     0% { background-position: 0% 0%; }
-    25% { background-position: 50% 50%; }
     50% { background-position: 100% 100%; }
-    75% { background-position: 50% 50%; }
     100% { background-position: 0% 0%; }
 }
-.block-container {
-    padding-top: 0rem;
-    padding-bottom: 1rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-}
-.particle {
-    position: fixed;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    animation: float 20s infinite linear;
-    z-index: 0;
-    box-shadow: 0 0 8px rgba(255,255,255,0.15);
-}
-@keyframes float {
-    from { transform: translateY(100vh); }
-    to { transform: translateY(-10vh); }
-}
-.glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(18px);
-    border-radius: 20px;
-    padding: 25px;
+
+/* ===== GLASS CHROME CARD ===== */
+.chrome-card {
+    background: linear-gradient(
+        145deg,
+        rgba(255,255,255,0.06),
+        rgba(255,255,255,0.015)
+    );
+    backdrop-filter: blur(20px);
+    border-radius: 22px;
+    padding: 26px;
     border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    box-shadow:
+        inset 0 0 12px rgba(255,255,255,0.05),
+        0 20px 50px rgba(0,0,0,0.7);
 }
-.hero-title {
-    font-size: 50px;
-    font-weight: 800;
+
+/* ===== TITLES ===== */
+.main-title {
+    font-size: 54px;
+    font-weight: 900;
     text-align: center;
-    margin-top: 0px;
-    color: #e5e5e5;
+    background: linear-gradient(90deg,#f5f5f5,#9f9f9f,#f5f5f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
-.hero-sub {
+
+.sub-title {
     text-align: center;
-    color: #c0c0c0;
-    margin-bottom: 40px;
     font-size: 18px;
+    color: #b5b5b5;
+    margin-bottom: 45px;
 }
+
+/* ===== SHINY BUTTONS ===== */
 .stButton button {
-    background: linear-gradient(135deg, #1f1c2c, #928dab);
-    border-radius: 14px;
-    font-weight: 600;
+    width: 100%;
+    border-radius: 16px;
     border: none;
-    color: #fff;
+    padding: 14px 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    background: linear-gradient(
+        135deg,
+        #3a3a3a,
+        #6f6f6f,
+        #3a3a3a
+    );
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.4),
+        0 6px 20px rgba(0,0,0,0.6);
+    transition: all 0.35s ease;
 }
+
+.stButton button:hover {
+    transform: translateY(-2px) scale(1.02);
+    background: linear-gradient(
+        135deg,
+        #6f6f6f,
+        #d1d1d1,
+        #6f6f6f
+    );
+    box-shadow:
+        0 0 20px rgba(200,200,200,0.35),
+        0 10px 35px rgba(0,0,0,0.8);
+}
+
+/* ===== SLIDERS ===== */
+.stSlider > div {
+    color: #d6d6d6;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    text-align:center;
+    color:#8a8a8a;
+    margin-top:50px;
+    font-size:14px;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
-particle_colors = ["#4facfe", "#00f2fe", "#3a7bd5"]  
-for _ in range(25):
-    left = random.randint(0, 100)
-    delay = random.randint(0, 20)
-    color = random.choice(particle_colors)
-    st.markdown(f"<div class='particle' style='left:{left}%; animation-delay:{delay}s; background:{color}; box-shadow:0 0 10px {color}'></div>", unsafe_allow_html=True)
+# ---------------- HEADER ----------------
+st.markdown('<div class="main-title">🔒 ML CAPTCHA REFINEMENT</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-title">Adaptive CAPTCHA optimization using machine intelligence</div>', unsafe_allow_html=True)
 
-st.markdown('<h1 class="hero-title">🔐 ML CAPTCHA Refinement</h1>', unsafe_allow_html=True)
-st.markdown('<div class="hero-sub">Self-optimizing CAPTCHA system with real-time ML feedback</div>', unsafe_allow_html=True)
+# ---------------- LAYOUT ----------------
+col1, col2, col3 = st.columns([1.25, 1.8, 1.35])
 
-col1, col2, col3 = st.columns([1.2, 1.8, 1.4])
-
+# ---------- LEFT: MANUAL CONTROLS ----------
 with col1:
-    st.markdown('<div class="glass">', unsafe_allow_html=True)
-    st.markdown("### ⚙️ Manual Controls")
-    noise = st.slider("Noise", 0.0, 1.0, 0.2)
-    dist = st.slider("Distortion", 0.0, 1.0, 0.2)
-    clutter = st.slider("Clutter", 0.0, 1.0, 0.2)
-    gen = st.button("🎲 Generate CAPTCHA", use_container_width=True)
+    st.markdown('<div class="chrome-card">', unsafe_allow_html=True)
+    st.markdown("### ⚙️ Control Parameters")
+
+    noise = st.slider("Noise Intensity", 0.0, 1.0, 0.25)
+    distortion = st.slider("Geometric Distortion", 0.0, 1.0, 0.25)
+    clutter = st.slider("Visual Clutter", 0.0, 1.0, 0.25)
+
+    generate_btn = st.button("🎲 Generate CAPTCHA")
+
     st.markdown('</div>', unsafe_allow_html=True)
 
+# ---------- CENTER: PREVIEW ----------
 with col2:
-    st.markdown('<div class="glass">', unsafe_allow_html=True)
-    st.markdown("### 🖼️ CAPTCHA Preview")
-    if gen:
-        img, text = generate_captcha(noise, dist, clutter)
+    st.markdown('<div class="chrome-card">', unsafe_allow_html=True)
+    st.markdown("### 🖼 CAPTCHA Output")
+
+    if generate_btn:
+        img, text = generate_captcha(noise, distortion, clutter)
         st.image(img, use_column_width=True)
+
         pred, conf = predict(img)
-        st.markdown(f"**Text:** `{text}`  \n**Predicted Difficulty:** `{pred.upper()}`  \n**Confidence:** `{conf:.2f}`")
+        st.markdown(
+            f"""
+            **Text:** `{text}`  
+            **Predicted Difficulty:** `{pred.upper()}`  
+            **Confidence Score:** `{conf:.2f}`
+            """
+        )
+
     st.markdown('</div>', unsafe_allow_html=True)
 
+# ---------- RIGHT: REFINEMENT ----------
 with col3:
-    st.markdown('<div class="glass">', unsafe_allow_html=True)
-    st.markdown("### 🔁 CAPTCHA Refinement")
-    target = st.selectbox("Target Difficulty", ["easy", "medium", "hard"])
-    refine_btn = st.button("✨ Refine CAPTCHA")
-    auto = st.button("🚀 Start Auto-Refinement")
-    heatmap_placeholder = st.empty()
-    chart_placeholder = st.empty()
+    st.markdown('<div class="chrome-card">', unsafe_allow_html=True)
+    st.markdown("### 🔁 Refinement Engine")
 
-    if refine_btn:
-        img, text, predicted = refine(target)
+    target = st.selectbox("Target Difficulty", ["easy", "medium", "hard"])
+    refine_once = st.button("✨ Refine Once")
+    auto_refine = st.button("🚀 Auto-Refine")
+
+    line_slot = st.empty()
+    heat_slot = st.empty()
+
+    if refine_once:
+        img, text, level = refine(target)
         st.image(img, use_column_width=True)
+
         buf = BytesIO()
         img.save(buf, format="PNG")
-        st.download_button("⬇️ Download CAPTCHA", data=buf.getvalue(), file_name=f"{text}_{predicted}.png", mime="image/png", use_container_width=True)
+        st.download_button(
+            "⬇ Download CAPTCHA",
+            buf.getvalue(),
+            file_name=f"{text}_{level}.png",
+            mime="image/png"
+        )
 
-    if auto:
-        grid_size = 5
-        confidences = []
-        difficulties = np.zeros((grid_size, grid_size))
-    
-        # Initialize empty figures for live update
-        fig_line, ax_line = plt.subplots(figsize=(7,5))
-        ax_line.set_ylim(0,1)
-        ax_line.set_facecolor("white")
-        fig_line.patch.set_facecolor("white")
-        ax_line.set_title("Average Confidence Convergence", color="black")
-        ax_line.set_xlabel("Iteration", color="black")
-        ax_line.set_ylabel("Confidence", color="black")
-        ax_line.tick_params(colors="black")
-        line_plot, = ax_line.plot([], [], marker='o', color='green', linewidth=2)
-        line_placeholder.pyplot(fig_line)
-    
-        fig_heat, ax_heat = plt.subplots(figsize=(7,5))
-        heatmap_placeholder.pyplot(fig_heat)
-    
+    if auto_refine:
+        grid = 4
+        convergence = []
+
         for step in range(6):
-            for i in range(grid_size):
-                for j in range(grid_size):
-                    img, text, pred = refine(target)
-                    _, conf = predict(img)
-                    difficulties[i, j] = conf
-    
-            avg_conf = difficulties.mean()
-            confidences.append(avg_conf)
-    
-                       # Update convergence line
-            line_plot.set_data(range(len(confidences)), confidences)
-            ax_line.set_xlim(0, max(5,len(confidences)))
-            line_placeholder.pyplot(fig_line)  # remove clear_figure
-            
-            # Update heatmap
-            ax_heat.clear()
-            hm = sns.heatmap(difficulties, annot=True, fmt=".2f", cmap="coolwarm", square=True, ax=ax_heat)
-            cbar = hm.collections[0].colorbar
-            cbar.ax.tick_params(color="black", labelcolor="black")
-            ax_heat.tick_params(colors="black")
-            fig_heat.patch.set_facecolor("white")
-            heatmap_placeholder.pyplot(fig_heat)  # remove clear_figure
-           
+            matrix = np.zeros((grid, grid))
 
-    
-            time.sleep(0.5)
-    
-        st.success("Target difficulty stabilized ✅")
+            for i in range(grid):
+                for j in range(grid):
+                    img, _, _ = refine(target)
+                    _, c = predict(img)
+                    matrix[i, j] = c
 
-st.markdown("<center style='margin-top:40px;color:#9ca3af;'>✨ Made by SANYAM KATOCH ✨</center>", unsafe_allow_html=True)
+            convergence.append(matrix.mean())
 
+            # Line plot
+            fig1, ax1 = plt.subplots()
+            ax1.plot(convergence, marker='o', linewidth=2)
+            ax1.set_ylim(0, 1)
+            ax1.set_title("Confidence Convergence")
+            ax1.set_xlabel("Iteration")
+            ax1.set_ylabel("Confidence")
+            line_slot.pyplot(fig1, clear_figure=True)
+            plt.close(fig1)
 
+            # Heatmap
+            fig2, ax2 = plt.subplots(figsize=(5, 5))
+            sns.heatmap(matrix, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
+            ax2.set_title(f"Difficulty Surface — Step {step+1}")
+            heat_slot.pyplot(fig2, clear_figure=True)
+            plt.close(fig2)
 
+            time.sleep(0.45)
 
+        st.success("Target difficulty stabilized ✔")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ---------------- FOOTER ----------------
+st.markdown('<div class="footer">✨ Designed & Engineered by SANYAM KATOCH ✨</div>', unsafe_allow_html=True)
