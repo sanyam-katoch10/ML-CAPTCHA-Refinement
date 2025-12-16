@@ -12,29 +12,32 @@ st.set_page_config(page_title="ML CAPTCHA Refinement", page_icon="🔒", layout=
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #1b1b1b, #2a2a2a, #121212, #2e2e2e);
-    background-size: 400% 400%;
-    animation: bgShift 25s ease infinite;
+    background: linear-gradient(-45deg, #1b1b1b, #2a2a2a, #121212, #2e2e2e, #1b1b1b);
+    background-size: 1000% 1000%;
+    animation: gradientShift 30s ease infinite;
     color: #eaeaea;
     font-family: 'Segoe UI', sans-serif;
     overflow: hidden;
 }
-@keyframes bgShift {
-    0% {background-position: 0% 50%;}
-    50% {background-position: 100% 50%;}
-    100% {background-position: 0% 50%;}
+@keyframes gradientShift {
+    0% {background-position:0% 50%;}
+    25% {background-position:50% 100%;}
+    50% {background-position:100% 50%;}
+    75% {background-position:50% 0%;}
+    100% {background-position:0% 50%;}
 }
 
-.shape {
+.bubble {
     position: absolute;
     border-radius: 50%;
-    opacity: 0.2;
-    animation: floatShape 20s linear infinite;
+    opacity: 0.15;
+    animation: floatBubble linear infinite;
+    pointer-events: none;
 }
-@keyframes floatShape {
-    0% {transform: translateY(0px) translateX(0px);}
-    50% {transform: translateY(-30px) translateX(20px);}
-    100% {transform: translateY(0px) translateX(0px);}
+@keyframes floatBubble {
+    0% {transform: translateY(100vh) translateX(0) scale(0.5);}
+    50% {transform: translateY(50vh) translateX(20vw) scale(1);}
+    100% {transform: translateY(-10vh) translateX(-10vw) scale(0.3);}
 }
 
 .topbar {
@@ -47,13 +50,19 @@ st.markdown("""
     font-size: 28px;
     font-weight: 800;
     color: #f0f0f0;
+    animation: shineTopBar 5s ease-in-out infinite alternate;
+}
+@keyframes shineTopBar {
+    0% {box-shadow:0 0 10px #00ffff;}
+    50% {box-shadow:0 0 35px #ff00ff;}
+    100% {box-shadow:0 0 25px #00ffff;}
 }
 
 section[data-testid="stSidebar"] {
     background: rgba(20,20,20,0.85);
     backdrop-filter: blur(12px);
     border-right: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 0 15px #00ffff, 0 0 25px #00ffff;
+    box-shadow: 0 0 15px #00ffff, 0 0 25px #ff00ff;
 }
 .sidebar-title {
     font-size: 22px;
@@ -67,12 +76,18 @@ section[data-testid="stSidebar"] {
     border-radius: 20px;
     padding: 25px;
     border: 2px solid #00ffff;
-    box-shadow: 0 0 15px rgba(0,255,255,0.3), 0 0 25px rgba(0,255,255,0.2), 0 10px 35px rgba(0,0,0,0.7);
+    box-shadow: 0 0 15px rgba(0,255,255,0.3), 0 0 25px rgba(255,0,255,0.2), 0 10px 35px rgba(0,0,0,0.7);
     transition: all 0.3s ease;
+    animation: shimmerCard 8s ease-in-out infinite alternate;
 }
 .card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 0 35px rgba(0,255,255,0.7), 0 0 50px rgba(0,255,255,0.5), 0 10px 40px rgba(0,0,0,0.8);
+    box-shadow: 0 0 35px rgba(0,255,255,0.7), 0 0 50px rgba(255,0,255,0.5), 0 10px 40px rgba(0,0,0,0.8);
+}
+@keyframes shimmerCard {
+    0% {border-color: #00ffff; box-shadow: 0 0 15px #00ffff;}
+    50% {border-color: #ff00ff; box-shadow: 0 0 35px #ff00ff;}
+    100% {border-color: #00ffff; box-shadow: 0 0 25px #00ffff;}
 }
 
 .stButton button {
@@ -84,10 +99,16 @@ section[data-testid="stSidebar"] {
     background: linear-gradient(135deg,#3b3b3b,#7b7b7b,#3b3b3b);
     box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 6px 18px rgba(0,0,0,0.7);
     transition: all 0.3s ease;
+    animation: shineBtn 6s ease-in-out infinite alternate;
 }
 .stButton button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 12px 35px rgba(0,0,0,0.9);
+    box-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff, 0 12px 35px rgba(0,0,0,0.9);
+}
+@keyframes shineBtn {
+    0% {box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 6px 18px rgba(0,0,0,0.7);}
+    50% {box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), 0 8px 25px rgba(255,0,255,0.8);}
+    100% {box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 6px 18px rgba(0,0,0,0.7);}
 }
 
 .footer {
@@ -139,7 +160,6 @@ elif page == "🔁 Refinement Engine":
     target = st.selectbox("Target Difficulty", ["easy", "medium", "hard"])
     refine_btn = st.button("✨ Refine Once")
     auto_btn = st.button("🚀 Auto-Refine")
-
     live_slot = st.empty()
     col1, col2 = st.columns([1,1])
     conv_slot = col1.empty()
@@ -168,9 +188,7 @@ elif page == "🔁 Refinement Engine":
                     live_slot.image(img, use_column_width=True)
                     _, c = predict(img)
                     mat_target[i, j] = c
-
             confs.append(mat_target.mean())
-
             for t in range(1, steps_per_update + 1):
                 mat_interpolated = mat_current + (mat_target - mat_current) * (t / steps_per_update)
                 fig1, ax1 = plt.subplots()
@@ -180,7 +198,6 @@ elif page == "🔁 Refinement Engine":
                 ax1.grid(True, alpha=0.3)
                 conv_slot.pyplot(fig1, clear_figure=True)
                 plt.close(fig1)
-
                 fig2, ax2 = plt.subplots()
                 im = ax2.imshow(mat_interpolated, cmap=cmap, norm=norm)
                 for i in range(grid):
@@ -194,11 +211,10 @@ elif page == "🔁 Refinement Engine":
                 heat_slot.pyplot(fig2, clear_figure=True)
                 plt.close(fig2)
                 time.sleep(0.05)
-
             mat_current = mat_target.copy()
         st.success("Target difficulty stabilized ✔")
 
 st.markdown("<div class='footer'>✨ Built by SANYAM KATOCH ✨</div>", unsafe_allow_html=True)
 
-for i in range(5):
-    st.markdown(f"<div class='shape' style='width:{50+i*10}px; height:{50+i*10}px; top:{10+i*15}%; left:{20+i*10}%; background: radial-gradient(circle, #00ffff, transparent); animation-delay:{i*3}s;'></div>", unsafe_allow_html=True)
+for i in range(20):
+    st.markdown(f"<div class='bubble' style='width:{20+i*5}px; height:{20+i*5}px; top:{np.random.randint(0,90)}%; left:{np.random.randint(0,90)}%; background: radial-gradient(circle, #00ffff, #ff00ff, transparent); animation-duration:{5+np.random.randint(0,10)}s; animation-delay:{np.random.randint(0,5)}s;'></div>", unsafe_allow_html=True)
