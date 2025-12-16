@@ -33,7 +33,7 @@ st.markdown("""
     backdrop-filter: blur(15px);
     padding: 20px 30px;
     border-radius: 20px;
-    box-shadow: inset 0 1px 3px rgba(255,255,255,0.1), 0 15px 40px rgba(0,0,0,0.8);
+    box-shadow: 0 0 15px #00ffff, 0 0 25px #00ffff, inset 0 1px 3px rgba(255,255,255,0.1), 0 15px 40px rgba(0,0,0,0.8);
     margin-bottom: 25px;
     font-size: 28px;
     font-weight: 800;
@@ -45,6 +45,7 @@ section[data-testid="stSidebar"] {
     background: rgba(20,20,20,0.85);
     backdrop-filter: blur(12px);
     border-right: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 0 15px #00ffff, 0 0 25px #00ffff;
 }
 .sidebar-title {
     font-size: 22px;
@@ -164,7 +165,7 @@ elif page == "🔁 Refinement Engine":
         mat_current = np.zeros((grid, grid))
         steps_per_update = 5
         norm = mcolors.Normalize(vmin=0, vmax=1)
-        cmap = plt.cm.plasma  # reverted to original professional colors
+        cmap = plt.cm.plasma  # Original professional colors
 
         for step in range(6):
             # Generate target matrix
@@ -191,15 +192,22 @@ elif page == "🔁 Refinement Engine":
                 conv_slot.pyplot(fig1, clear_figure=True)
                 plt.close(fig1)
 
-                # Animated heatmap
+                # Animated heatmap with dark ticks, labels, frame
                 fig2, ax2 = plt.subplots()
                 im = ax2.imshow(mat_interpolated, cmap=cmap, norm=norm)
+
+                # Dark text inside cells
                 for i in range(grid):
                     for j in range(grid):
                         ax2.text(j, i, f"{mat_interpolated[i,j]:.2f}", ha='center', va='center',
                                  color='black', fontsize=10, fontweight='bold')
+
+                # Dark axes, ticks, and frame
+                ax2.tick_params(colors='black', which='both', labelsize=10)
+                for spine in ax2.spines.values():
+                    spine.set_color('black')
+
                 ax2.set_title("Heatmap", color="#00ffff")
-                ax2.tick_params(colors="#e0e0e0")
                 heat_slot.pyplot(fig2, clear_figure=True)
                 plt.close(fig2)
                 time.sleep(0.1)
