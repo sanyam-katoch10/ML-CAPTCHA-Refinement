@@ -17,44 +17,27 @@ st.set_page_config(
 # ===================== CSS =====================
 st.markdown("""
 <style>
-
-/* ===== ANIMATED DARK GRADIENT BACKGROUND ===== */
+/* ===== SHINY DARK BACKGROUND ===== */
 .stApp {
-    background: linear-gradient(135deg, #0a0b0f, #10121a, #14161f, #0e1016);
-    background-size: 400% 400%;
-    animation: bgShine 30s ease infinite;
+    background: radial-gradient(circle at 20% 30%, #0b0c12, #0f101a 70%), 
+                radial-gradient(circle at 80% 70%, #13141c, #0a0b12 70%);
+    background-size: 200% 200%;
+    animation: bgShine 40s ease infinite alternate;
     color: #e7e7e7;
 }
 
 @keyframes bgShine {
-    0% {background-position: 0% 50%;}
-    25% {background-position: 50% 100%;}
-    50% {background-position: 100% 50%;}
-    75% {background-position: 50% 0%;}
-    100% {background-position: 0% 50%;}
+    0% {background-position: 0% 0%, 100% 100%;}
+    25% {background-position: 50% 30%, 50% 70%;}
+    50% {background-position: 100% 50%, 0% 50%;}
+    75% {background-position: 50% 70%, 50% 30%;}
+    100% {background-position: 0% 100%, 100% 0%;}
 }
 
-/* ===== TOP BAR ===== */
-.topbar {
-    background: linear-gradient(135deg,#1a1c24,#2b2f3a);
-    padding: 18px 30px;
-    border-radius: 18px;
-    font-size: 26px;
-    font-weight: 800;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.08), 0 18px 45px rgba(0,0,0,0.9);
-    margin-bottom: 20px;
-}
-
-/* ===== SIDEBAR ===== */
-section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg,#0d0f15,#171a23);
-    border-right: 1px solid rgba(255,255,255,0.06);
-}
-
-/* ===== GLASS CARDS & PLOTS ===== */
+/* ===== GLASS CARDS ===== */
 .card, .plot-card {
     background: rgba(30,30,38,0.55);
-    backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(18px) saturate(180%);
     border-radius: 22px;
     padding: 20px;
     border: 1px solid rgba(255,255,255,0.12);
@@ -64,12 +47,12 @@ section[data-testid="stSidebar"] {
 
 .card:hover, .plot-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 28px 60px rgba(0,0,0,0.9), 0 0 18px rgba(255,255,255,0.12);
+    box-shadow: 0 28px 60px rgba(0,0,0,0.95), 0 0 20px rgba(255,255,255,0.12);
 }
 
 /* ===== PLOT HOVER GLOW ===== */
 .plot-card:hover {
-    filter: drop-shadow(0 0 12px rgba(180,220,255,0.5));
+    filter: drop-shadow(0 0 14px rgba(0,200,255,0.6));
 }
 
 /* ===== BUTTONS ===== */
@@ -85,16 +68,10 @@ section[data-testid="stSidebar"] {
 
 .stButton button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 28px rgba(180,220,255,0.5), 0 18px 40px rgba(0,0,0,0.95);
-}
-
-/* ===== FOOTER ===== */
-.footer {
-    text-align: center;
-    margin-top: 40px;
-    color: #8b8f9c;
+    box-shadow: 0 0 28px rgba(0,200,255,0.6), 0 18px 40px rgba(0,0,0,0.95);
 }
 </style>
+
 """, unsafe_allow_html=True)
 
 # ===================== TOP BAR =====================
@@ -231,3 +208,4 @@ elif page == "🔁 Refinement Engine":
 
 # ===================== FOOTER =====================
 st.markdown("<div class='footer'>✨ Built by SANYAM KATOCH ✨</div>", unsafe_allow_html=True)
+
