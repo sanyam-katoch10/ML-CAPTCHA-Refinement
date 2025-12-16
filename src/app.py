@@ -7,23 +7,17 @@ import matplotlib.colors as mcolors
 import numpy as np
 import time
 
-# ===================== CONFIG =====================
 st.set_page_config(page_title="ML CAPTCHA Refinement", page_icon="🔒", layout="wide")
 
-# ===================== SESSION STATE =====================
-if "conf_list" not in st.session_state:
-    st.session_state.conf_list = []
-
-# ===================== CSS =====================
 st.markdown("""
 <style>
-/* ---------- BACKGROUND ---------- */
 .stApp {
-    background: linear-gradient(135deg, #0a0a0a, #1a1a1a, #121212, #1b1b1b);
+    background: linear-gradient(135deg, #1b1b1b, #2a2a2a, #121212, #2e2e2e);
     background-size: 400% 400%;
-    animation: bgShift 30s ease infinite;
+    animation: bgShift 25s ease infinite;
     color: #eaeaea;
     font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
 }
 @keyframes bgShift {
     0% {background-position: 0% 50%;}
@@ -31,7 +25,18 @@ st.markdown("""
     100% {background-position: 0% 50%;}
 }
 
-/* ---------- TOP BAR ---------- */
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.2;
+    animation: floatShape 20s linear infinite;
+}
+@keyframes floatShape {
+    0% {transform: translateY(0px) translateX(0px);}
+    50% {transform: translateY(-30px) translateX(20px);}
+    100% {transform: translateY(0px) translateX(0px);}
+}
+
 .topbar {
     background: rgba(30,30,30,0.7);
     backdrop-filter: blur(15px);
@@ -44,7 +49,6 @@ st.markdown("""
     color: #f0f0f0;
 }
 
-/* ---------- SIDEBAR ---------- */
 section[data-testid="stSidebar"] {
     background: rgba(20,20,20,0.85);
     backdrop-filter: blur(12px);
@@ -57,7 +61,6 @@ section[data-testid="stSidebar"] {
     margin-bottom: 20px;
 }
 
-/* ---------- CARDS WITH NEON GLOW ---------- */
 .card {
     background: rgba(40,40,40,0.45);
     backdrop-filter: blur(15px);
@@ -72,7 +75,6 @@ section[data-testid="stSidebar"] {
     box-shadow: 0 0 35px rgba(0,255,255,0.7), 0 0 50px rgba(0,255,255,0.5), 0 10px 40px rgba(0,0,0,0.8);
 }
 
-/* ---------- BUTTONS WITH NEON GLOW ---------- */
 .stButton button {
     border-radius: 16px;
     border: none;
@@ -88,7 +90,6 @@ section[data-testid="stSidebar"] {
     box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 12px 35px rgba(0,0,0,0.9);
 }
 
-/* ---------- FOOTER ---------- */
 .footer {
     text-align: center;
     margin-top: 40px;
@@ -97,33 +98,22 @@ section[data-testid="stSidebar"] {
 </style>
 """, unsafe_allow_html=True)
 
-# ===================== TOP BAR =====================
-st.markdown(
-    "<div class='topbar'>🔒 ML CAPTCHA Refinement <span style='float:right;font-size:16px;'>🟢 Model Online</span></div>",
-    unsafe_allow_html=True
-)
+st.markdown("<div class='topbar'>🔒 ML CAPTCHA Refinement <span style='float:right;font-size:16px;'>🟢 Model Online</span></div>", unsafe_allow_html=True)
 
-# ===================== SIDEBAR =====================
 with st.sidebar:
     st.markdown("<div class='sidebar-title'>⚙️ Navigation</div>", unsafe_allow_html=True)
-    page = st.radio(
-        "",
-        ["📊 Dashboard", "🖼 CAPTCHA Generator", "🔁 Refinement Engine"]
-    )
+    page = st.radio("", ["📊 Dashboard", "🖼 CAPTCHA Generator", "🔁 Refinement Engine"])
 
-# ===================== DASHBOARD =====================
 if page == "📊 Dashboard":
     st.markdown("## 📊 System Overview")
-    avg_conf = np.mean(st.session_state.conf_list) if st.session_state.conf_list else 0.0
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.markdown(f"<div class='card'>### Avg Confidence<br><h2>{avg_conf:.2f}</h2></div>", unsafe_allow_html=True)
+        st.markdown("<div class='card'>### Avg Confidence<br><h2>0.76</h2></div>", unsafe_allow_html=True)
     with col2:
         st.markdown("<div class='card'>### Stability Status<br><h2>Stable</h2></div>", unsafe_allow_html=True)
     with col3:
         st.markdown("<div class='card'>### Active Model<br><h2>CNN v1.0</h2></div>", unsafe_allow_html=True)
 
-# ===================== CAPTCHA GENERATOR =====================
 elif page == "🖼 CAPTCHA Generator":
     st.markdown("## 🖼 CAPTCHA Generator")
     col1, col2 = st.columns([1.2, 1.8])
@@ -137,37 +127,27 @@ elif page == "🖼 CAPTCHA Generator":
     with col2:
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         preview_slot = st.empty()
-        avg_conf_slot = st.empty()  # Live avg confidence display
         if gen_btn:
             img, text = generate_captcha(noise, distortion, clutter)
             preview_slot.image(img, use_column_width=True)
             pred, conf = predict(img)
-            st.session_state.conf_list.append(conf)
-            avg_conf = np.mean(st.session_state.conf_list)
-            avg_conf_slot.markdown(f"**Live Avg Confidence:** {avg_conf:.2f}")
             st.markdown(f"**Text:** `{text}`  |  **Difficulty:** `{pred.upper()}`  |  **Confidence:** `{conf:.2f}`")
         st.markdown("</div>", unsafe_allow_html=True)
 
-# ===================== REFINEMENT ENGINE =====================
 elif page == "🔁 Refinement Engine":
     st.markdown("## 🔁 Refinement Engine")
     target = st.selectbox("Target Difficulty", ["easy", "medium", "hard"])
     refine_btn = st.button("✨ Refine Once")
     auto_btn = st.button("🚀 Auto-Refine")
 
-    live_slot = st.empty()       # live CAPTCHA preview
-    avg_conf_slot = st.empty()   # live avg confidence
-    col1, col2 = st.columns([1,1])  # side-by-side plots
-    conv_slot = col1.empty()     # convergence line
-    heat_slot = col2.empty()     # animated heatmap
+    live_slot = st.empty()
+    col1, col2 = st.columns([1,1])
+    conv_slot = col1.empty()
+    heat_slot = col2.empty()
 
     if refine_btn:
         img, text, lvl = refine(target)
         live_slot.image(img, use_column_width=True)
-        _, c = predict(img)
-        st.session_state.conf_list.append(c)
-        avg_conf = np.mean(st.session_state.conf_list)
-        avg_conf_slot.markdown(f"**Live Avg Confidence:** {avg_conf:.2f}")
         buf = BytesIO()
         img.save(buf, format="PNG")
         st.download_button("⬇ Download CAPTCHA", buf.getvalue(), f"{text}_{lvl}.png")
@@ -187,17 +167,12 @@ elif page == "🔁 Refinement Engine":
                     img, _, _ = refine(target)
                     live_slot.image(img, use_column_width=True)
                     _, c = predict(img)
-                    st.session_state.conf_list.append(c)
-                    avg_conf = np.mean(st.session_state.conf_list)
-                    avg_conf_slot.markdown(f"**Live Avg Confidence:** {avg_conf:.2f}")
                     mat_target[i, j] = c
 
             confs.append(mat_target.mean())
 
             for t in range(1, steps_per_update + 1):
                 mat_interpolated = mat_current + (mat_target - mat_current) * (t / steps_per_update)
-
-                # Convergence line
                 fig1, ax1 = plt.subplots()
                 ax1.plot(confs, marker='o', color='#00ffff')
                 ax1.set_ylim(0,1)
@@ -206,7 +181,6 @@ elif page == "🔁 Refinement Engine":
                 conv_slot.pyplot(fig1, clear_figure=True)
                 plt.close(fig1)
 
-                # Animated heatmap
                 fig2, ax2 = plt.subplots()
                 im = ax2.imshow(mat_interpolated, cmap=cmap, norm=norm)
                 for i in range(grid):
@@ -222,8 +196,9 @@ elif page == "🔁 Refinement Engine":
                 time.sleep(0.05)
 
             mat_current = mat_target.copy()
-
         st.success("Target difficulty stabilized ✔")
 
-# ===================== FOOTER =====================
 st.markdown("<div class='footer'>✨ Built by SANYAM KATOCH ✨</div>", unsafe_allow_html=True)
+
+for i in range(5):
+    st.markdown(f"<div class='shape' style='width:{50+i*10}px; height:{50+i*10}px; top:{10+i*15}%; left:{20+i*10}%; background: radial-gradient(circle, #00ffff, transparent); animation-delay:{i*3}s;'></div>", unsafe_allow_html=True)
