@@ -14,12 +14,12 @@ st.markdown("""
 <style>
 /* ===== DARK GRADIENT BACKGROUND ===== */
 .stApp {
-    background: linear-gradient(120deg, #0a0a0a, #1b1b1b, #0f0f0f);
-    background-size: 300% 300%;
-    animation: bgShift 40s ease infinite;
+    background: linear-gradient(120deg, #0a0a0a, #1b1b1b, #0f0f0f, #10121c);
+    background-size: 400% 400%;
+    animation: gradientShift 40s ease infinite;
     color: #eaeaea;
 }
-@keyframes bgShift {
+@keyframes gradientShift {
     0% {background-position:0% 50%;}
     50% {background-position:100% 50%;}
     100% {background-position:0% 50%;}
@@ -37,7 +37,7 @@ st.markdown("""
 }
 .card:hover, .plot-card:hover, .slider-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 28px 60px rgba(0,0,0,0.95), 0 0 22px rgba(255,255,255,0.12);
+    box-shadow: 0 28px 60px rgba(0,0,0,0.95), 0 0 22px rgba(0,255,255,0.2);
 }
 
 /* ===== BUTTONS ===== */
@@ -119,21 +119,20 @@ if refine_btn:
 
 if auto_btn:
     confs = []
-    heatmap_generated = False
-    heatmap_mat = None
+    heatmap_mat = np.random.rand(4,4)  # initial heatmap
     for step in range(6):
         # Generate new CAPTCHA and confidence
         img, _, _ = refine(target)
         _, c = predict(img)
         confs.append(c)
+
+        # Update heatmap dynamically
+        heatmap_mat += np.random.rand(4,4)*0.05  # simulate live updates
+
+        # Update live CAPTCHA
         img_slot_refine.image(img, use_column_width=True)
 
-        # Generate heatmap only once
-        if not heatmap_generated:
-            heatmap_mat = np.random.rand(4,4)  # Replace with actual confidence if needed
-            heatmap_generated = True
-
-        # Convergence Line
+        # Convergence line (one plot)
         with plot_col1:
             st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
             fig1, ax1 = plt.subplots(figsize=(4,3))
@@ -144,7 +143,7 @@ if auto_btn:
             plt.close(fig1)
             st.markdown("</div>", unsafe_allow_html=True)
 
-        # Heatmap (only one)
+        # Heatmap (one plot)
         with plot_col2:
             st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
             fig2, ax2 = plt.subplots(figsize=(4,3))
