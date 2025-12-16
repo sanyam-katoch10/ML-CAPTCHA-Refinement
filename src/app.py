@@ -116,6 +116,7 @@ if page == "📊 Dashboard":
         st.markdown("<div class='card'>### Stability Status<br><h2>Stable</h2></div>", unsafe_allow_html=True)
     with col3:
         st.markdown("<div class='card'>### Active Model<br><h2>CNN v1.0</h2></div>", unsafe_allow_html=True)
+    st.markdown("<div class='card'>### 📈 Refinement Trend</div>", unsafe_allow_html=True)
 
 # ===================== CAPTCHA GENERATOR =====================
 elif page == "🖼 CAPTCHA Generator":
@@ -163,7 +164,7 @@ elif page == "🔁 Refinement Engine":
         mat_current = np.zeros((grid, grid))
         steps_per_update = 5
         norm = mcolors.Normalize(vmin=0, vmax=1)
-        cmap = mcolors.LinearSegmentedColormap.from_list("blue_green_red", ["blue","green","red"])
+        cmap = plt.cm.plasma  # reverted to original professional colors
 
         for step in range(6):
             # Generate target matrix
@@ -209,4 +210,3 @@ elif page == "🔁 Refinement Engine":
 
 # ===================== FOOTER =====================
 st.markdown("<div class='footer'>✨ Built by SANYAM KATOCH ✨</div>", unsafe_allow_html=True)
-
