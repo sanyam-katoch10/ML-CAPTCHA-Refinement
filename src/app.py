@@ -27,13 +27,9 @@ st.markdown("""
     100% {background-position:0% 50%;}
 }
 
-.bubble, .particle {
+.bubble {
     position: absolute;
     border-radius: 50%;
-    pointer-events: none;
-}
-
-.bubble {
     opacity: 0.15;
     animation: floatBubble linear infinite;
 }
@@ -41,18 +37,6 @@ st.markdown("""
     0% {transform: translateY(100vh) translateX(0) scale(0.5);}
     50% {transform: translateY(50vh) translateX(20vw) scale(1);}
     100% {transform: translateY(-10vh) translateX(-10vw) scale(0.3);}
-}
-
-.particle {
-    width: 4px;
-    height: 4px;
-    opacity: 0.1;
-    background: radial-gradient(circle, #00ffff, #ff00ff, transparent);
-    animation: driftParticle linear infinite;
-}
-@keyframes driftParticle {
-    0% {transform: translate(0,0);}
-    100% {transform: translate(200px,-150px);}
 }
 
 .topbar {
@@ -71,18 +55,6 @@ st.markdown("""
     0% {box-shadow:0 0 10px #00ffff;}
     50% {box-shadow:0 0 35px #ff00ff;}
     100% {box-shadow:0 0 25px #00ffff;}
-}
-
-section[data-testid="stSidebar"] {
-    background: rgba(20,20,20,0.85);
-    backdrop-filter: blur(12px);
-    border-right: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 0 15px #00ffff, 0 0 25px #ff00ff;
-}
-.sidebar-title {
-    font-size: 22px;
-    font-weight: 800;
-    margin-bottom: 20px;
 }
 
 .card {
@@ -132,6 +104,35 @@ section[data-testid="stSidebar"] {
     color: #8d8d8d;
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const count = 100;
+    for (let i=0; i<count; i++){
+        let particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.width = particle.style.height = Math.random()*4 + 2 + 'px';
+        particle.style.top = Math.random()*100 + 'vh';
+        particle.style.left = Math.random()*100 + 'vw';
+        particle.style.background = 'radial-gradient(circle, #00ffff, #ff00ff, transparent)';
+        particle.style.opacity = Math.random()*0.2 + 0.05;
+        particle.style.position = 'absolute';
+        particle.style.borderRadius = '50%';
+        particle.style.pointerEvents = 'none';
+        particle.style.transition = 'transform 0.1s linear';
+        document.body.appendChild(particle);
+    }
+
+    document.addEventListener('mousemove', function(e){
+        let particles = document.getElementsByClassName('particle');
+        for(let p of particles){
+            let dx = (Math.random()-0.5)*20;
+            let dy = (Math.random()-0.5)*20;
+            p.style.transform = `translate(${(e.clientX/100)+dx}px, ${(e.clientY/100)+dy}px)`;
+        }
+    });
+});
+</script>
 """, unsafe_allow_html=True)
 
 st.markdown("<div class='topbar'>🔒 ML CAPTCHA Refinement <span style='float:right;font-size:16px;'>🟢 Model Online</span></div>", unsafe_allow_html=True)
@@ -139,6 +140,7 @@ st.markdown("<div class='topbar'>🔒 ML CAPTCHA Refinement <span style='float:r
 with st.sidebar:
     st.markdown("<div class='sidebar-title'>⚙️ Navigation</div>", unsafe_allow_html=True)
     page = st.radio("", ["📊 Dashboard", "🖼 CAPTCHA Generator", "🔁 Refinement Engine"])
+
 
 if page == "📊 Dashboard":
     st.markdown("## 📊 System Overview")
@@ -236,3 +238,4 @@ for i in range(20):
 
 for i in range(50):
     st.markdown(f"<div class='particle' style='top:{np.random.randint(0,100)}%; left:{np.random.randint(0,100)}%; animation-duration:{5+np.random.randint(0,10)}s; animation-delay:{np.random.randint(0,5)}s;'></div>", unsafe_allow_html=True)
+
