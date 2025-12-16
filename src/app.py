@@ -19,9 +19,9 @@ st.markdown("""
 <style>
 /* ---------- BACKGROUND ---------- */
 .stApp {
-    background: linear-gradient(120deg, #121212, #1f1f1f, #181818);
+    background: linear-gradient(120deg, #101010, #1a1a1a, #0f0f0f);
     background-size: 400% 400%;
-    animation: bgShift 30s ease infinite;
+    animation: bgShift 25s ease infinite;
     color: #eaeaea;
     font-family: 'Segoe UI', sans-serif;
 }
@@ -33,7 +33,8 @@ st.markdown("""
 
 /* ---------- TOP BAR ---------- */
 .topbar {
-    background: linear-gradient(135deg,#1c1c1c,#2c2c2c);
+    background: rgba(30,30,30,0.7);
+    backdrop-filter: blur(12px);
     padding: 20px 30px;
     border-radius: 20px;
     box-shadow: inset 0 1px 2px rgba(255,255,255,0.1), 0 15px 40px rgba(0,0,0,0.8);
@@ -45,7 +46,8 @@ st.markdown("""
 
 /* ---------- SIDEBAR ---------- */
 section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg,#101010,#1c1c1c);
+    background: rgba(20,20,20,0.8);
+    backdrop-filter: blur(10px);
     border-right: 1px solid rgba(255,255,255,0.08);
 }
 .sidebar-title {
@@ -56,11 +58,17 @@ section[data-testid="stSidebar"] {
 
 /* ---------- CARDS ---------- */
 .card {
-    background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+    background: rgba(40,40,40,0.4);
+    backdrop-filter: blur(12px);
     border-radius: 20px;
     padding: 25px;
-    border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: inset 0 0 12px rgba(255,255,255,0.04), 0 15px 35px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: inset 0 0 12px rgba(255,255,255,0.05), 0 15px 35px rgba(0,0,0,0.6);
+    transition: all 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px rgba(255,255,255,0.2), 0 20px 40px rgba(0,0,0,0.8);
 }
 
 /* ---------- BUTTONS ---------- */
@@ -71,12 +79,12 @@ section[data-testid="stSidebar"] {
     font-weight: 700;
     color: #fff;
     background: linear-gradient(135deg,#4b4b4b,#9b9b9b,#4b4b4b);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.4), 0 6px 18px rgba(0,0,0,0.7);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 6px 18px rgba(0,0,0,0.7);
     transition: all 0.3s ease;
 }
 .stButton button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(220,220,220,0.45), 0 12px 30px rgba(0,0,0,0.9);
+    box-shadow: 0 0 30px rgba(220,220,220,0.5), 0 12px 35px rgba(0,0,0,0.9);
 }
 
 /* ---------- FOOTER ---------- */
@@ -137,7 +145,6 @@ elif page == "🖼 CAPTCHA Generator":
             preview_slot.image(img, use_column_width=True)
             pred, conf = predict(img)
             st.markdown(f"**Text:** `{text}`  |  **Difficulty:** `{pred.upper()}`  |  **Confidence:** `{conf:.2f}`")
-
         st.markdown("</div>", unsafe_allow_html=True)
 
 # ===================== REFINEMENT =====================
@@ -150,6 +157,7 @@ elif page == "🔁 Refinement Engine":
 
     col1, col2 = st.columns([1.5, 1.5])
     live_slot = st.empty()
+    heat_slot = st.empty()  # single heatmap display
 
     if refine_btn:
         img, text, lvl = refine(target)
@@ -162,8 +170,8 @@ elif page == "🔁 Refinement Engine":
     if auto_btn:
         confs = []
         grid = 4
+        mat = np.zeros((grid, grid))  # heatmap updated once
         for step in range(6):
-            mat = np.zeros((grid, grid))
             for i in range(grid):
                 for j in range(grid):
                     img, _, _ = refine(target)
@@ -173,7 +181,7 @@ elif page == "🔁 Refinement Engine":
 
             confs.append(mat.mean())
 
-            # Side-by-side plots
+            # Convergence line (dynamic)
             with col1:
                 fig1, ax1 = plt.subplots()
                 ax1.plot(confs, marker='o', color='#00ffff')
@@ -183,14 +191,15 @@ elif page == "🔁 Refinement Engine":
                 st.pyplot(fig1, clear_figure=True)
                 plt.close(fig1)
 
-            with col2:
-                fig2, ax2 = plt.subplots()
-                sns.heatmap(mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
-                ax2.set_title("Heatmap")
-                st.pyplot(fig2, clear_figure=True)
-                plt.close(fig2)
-
             time.sleep(0.5)
+
+        # Heatmap (once)
+        with col2:
+            fig2, ax2 = plt.subplots()
+            sns.heatmap(mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
+            ax2.set_title("Heatmap")
+            heat_slot.pyplot(fig2, clear_figure=True)
+            plt.close(fig2)
 
         st.success("Target difficulty stabilized ✔")
 
