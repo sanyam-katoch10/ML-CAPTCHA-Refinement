@@ -9,6 +9,7 @@ import time
 
 st.set_page_config(page_title="ML CAPTCHA Refinement", page_icon="🔒", layout="wide")
 
+# ===================== CSS + JS =====================
 st.markdown("""
 <style>
 .stApp {
@@ -25,36 +26,6 @@ st.markdown("""
     50% {background-position:100% 50%;}
     75% {background-position:50% 0%;}
     100% {background-position:0% 50%;}
-}
-
-.bubble {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0.15;
-    animation: floatBubble linear infinite;
-}
-@keyframes floatBubble {
-    0% {transform: translateY(100vh) translateX(0) scale(0.5);}
-    50% {transform: translateY(50vh) translateX(20vw) scale(1);}
-    100% {transform: translateY(-10vh) translateX(-10vw) scale(0.3);}
-}
-
-.topbar {
-    background: rgba(30,30,30,0.7);
-    backdrop-filter: blur(15px);
-    padding: 20px 30px;
-    border-radius: 20px;
-    box-shadow: 0 0 15px #00ffff, 0 0 25px #00ffff, inset 0 1px 3px rgba(255,255,255,0.1), 0 15px 40px rgba(0,0,0,0.8);
-    margin-bottom: 25px;
-    font-size: 28px;
-    font-weight: 800;
-    color: #f0f0f0;
-    animation: shineTopBar 5s ease-in-out infinite alternate;
-}
-@keyframes shineTopBar {
-    0% {box-shadow:0 0 10px #00ffff;}
-    50% {box-shadow:0 0 35px #ff00ff;}
-    100% {box-shadow:0 0 25px #00ffff;}
 }
 
 .card {
@@ -107,30 +78,64 @@ st.markdown("""
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const count = 100;
-    for (let i=0; i<count; i++){
-        let particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.width = particle.style.height = Math.random()*4 + 2 + 'px';
-        particle.style.top = Math.random()*100 + 'vh';
-        particle.style.left = Math.random()*100 + 'vw';
-        particle.style.background = 'radial-gradient(circle, #00ffff, #ff00ff, transparent)';
-        particle.style.opacity = Math.random()*0.2 + 0.05;
-        particle.style.position = 'absolute';
-        particle.style.borderRadius = '50%';
-        particle.style.pointerEvents = 'none';
-        particle.style.transition = 'transform 0.1s linear';
-        document.body.appendChild(particle);
+    const numParticles = 150;
+    const particles = [];
+    const container = document.body;
+
+    for(let i=0; i<numParticles; i++){
+        let p = document.createElement('div');
+        p.style.width = p.style.height = Math.random()*4+2 + 'px';
+        p.style.position = 'absolute';
+        p.style.top = Math.random()*100 + 'vh';
+        p.style.left = Math.random()*100 + 'vw';
+        p.style.borderRadius = '50%';
+        p.style.background = 'radial-gradient(circle, #00ffff, #ff00ff, transparent)';
+        p.style.opacity = Math.random()*0.2 + 0.05;
+        p.speedX = (Math.random()-0.5)*0.5;
+        p.speedY = (Math.random()-0.5)*0.5;
+        p.angle = Math.random()*2*Math.PI;
+        container.appendChild(p);
+        particles.push(p);
     }
 
+    let mouseX = 0;
+    let mouseY = 0;
     document.addEventListener('mousemove', function(e){
-        let particles = document.getElementsByClassName('particle');
-        for(let p of particles){
-            let dx = (Math.random()-0.5)*20;
-            let dy = (Math.random()-0.5)*20;
-            p.style.transform = `translate(${(e.clientX/100)+dx}px, ${(e.clientY/100)+dy}px)`;
-        }
+        mouseX = e.clientX;
+        mouseY = e.clientY;
     });
+
+    function animateParticles(){
+        for(let p of particles){
+            let rect = p.getBoundingClientRect();
+            let px = rect.left;
+            let py = rect.top;
+
+            // basic independent drift
+            px += p.speedX;
+            py += p.speedY;
+
+            // cursor attraction
+            let dx = mouseX - px;
+            let dy = mouseY - py;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < 200){
+                px += dx*0.002; // attraction strength
+                py += dy*0.002;
+            }
+
+            // boundary wrap-around
+            if(px < 0) px = window.innerWidth;
+            if(px > window.innerWidth) px = 0;
+            if(py < 0) py = window.innerHeight;
+            if(py > window.innerHeight) py = 0;
+
+            p.style.transform = `translate(${px}px, ${py}px)`;
+        }
+        requestAnimationFrame(animateParticles);
+    }
+
+    animateParticles();
 });
 </script>
 """, unsafe_allow_html=True)
@@ -140,6 +145,7 @@ st.markdown("<div class='topbar'>🔒 ML CAPTCHA Refinement <span style='float:r
 with st.sidebar:
     st.markdown("<div class='sidebar-title'>⚙️ Navigation</div>", unsafe_allow_html=True)
     page = st.radio("", ["📊 Dashboard", "🖼 CAPTCHA Generator", "🔁 Refinement Engine"])
+
 
 
 if page == "📊 Dashboard":
@@ -238,4 +244,5 @@ for i in range(20):
 
 for i in range(50):
     st.markdown(f"<div class='particle' style='top:{np.random.randint(0,100)}%; left:{np.random.randint(0,100)}%; animation-duration:{5+np.random.randint(0,10)}s; animation-delay:{np.random.randint(0,5)}s;'></div>", unsafe_allow_html=True)
+
 
