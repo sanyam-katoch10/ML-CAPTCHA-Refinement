@@ -18,23 +18,25 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* ===== DARK ANIMATED BACKGROUND ===== */
+/* ===== ANIMATED DARK BACKGROUND ===== */
 .stApp {
     background: linear-gradient(
-        130deg,
+        135deg,
         #0a0b0f,
-        #12141b,
-        #1a1d26,
+        #10121a,
+        #14161f,
         #0e1016
     );
-    background-size: 500% 500%;
-    animation: darkShift 35s ease infinite;
+    background-size: 400% 400%;
+    animation: bgShine 30s ease infinite;
     color: #e7e7e7;
 }
 
-@keyframes darkShift {
+@keyframes bgShine {
     0% {background-position: 0% 50%;}
+    25% {background-position: 50% 100%;}
     50% {background-position: 100% 50%;}
+    75% {background-position: 50% 0%;}
     100% {background-position: 0% 50%;}
 }
 
@@ -58,20 +60,25 @@ section[data-testid="stSidebar"] {
     border-right: 1px solid rgba(255,255,255,0.06);
 }
 
-/* ===== GLASS CARDS ===== */
-.card {
-    background: rgba(30,30,35,0.45);
-    backdrop-filter: blur(12px);
+/* ===== GLASS CARDS & PLOTS ===== */
+.card, .plot-card {
+    background: rgba(30,30,38,0.55);
+    backdrop-filter: blur(16px) saturate(180%);
     border-radius: 22px;
-    padding: 26px;
+    padding: 20px;
     border: 1px solid rgba(255,255,255,0.12);
     box-shadow: 0 18px 45px rgba(0,0,0,0.85);
-    transition: all 0.4s ease;
+    transition: all 0.35s ease;
 }
 
-.card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 35px 80px rgba(0,0,0,0.95), 0 0 18px rgba(255,255,255,0.1);
+.card:hover, .plot-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 60px rgba(0,0,0,0.9), 0 0 18px rgba(255,255,255,0.12);
+}
+
+/* ===== PLOT HOVER GLOW ===== */
+.plot-card:hover {
+    filter: drop-shadow(0 0 12px rgba(180,220,255,0.5));
 }
 
 /* ===== BUTTONS ===== */
@@ -86,24 +93,8 @@ section[data-testid="stSidebar"] {
 }
 
 .stButton button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0 28px rgba(210,210,255,0.4), 0 18px 40px rgba(0,0,0,0.95);
-}
-
-/* ===== GLASS PLOT CONTAINERS ===== */
-.plot-card {
-    background: rgba(35,35,42,0.45);
-    backdrop-filter: blur(14px);
-    border-radius: 20px;
-    padding: 16px;
-    border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: 0 18px 45px rgba(0,0,0,0.85);
-    transition: all 0.35s ease, box-shadow 0.35s ease;
-}
-
-.plot-card:hover {
-    box-shadow: 0 25px 60px rgba(0,0,0,0.9), 0 0 24px rgba(180,220,255,0.5);
-    filter: drop-shadow(0 0 12px rgba(180,220,255,0.5));
+    transform: translateY(-2px);
+    box-shadow: 0 0 28px rgba(180,220,255,0.5), 0 18px 40px rgba(0,0,0,0.95);
 }
 
 /* ===== FOOTER ===== */
@@ -166,7 +157,7 @@ elif page == "🖼 CAPTCHA Generator":
             **Confidence:** `{conf:.2f}`
             """)
 
-        # Side-by-side convergence + heatmap (static)
+        # Side-by-side plots (static in generator)
         p1, p2 = st.columns(2)
         with p1:
             st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
@@ -178,7 +169,6 @@ elif page == "🖼 CAPTCHA Generator":
             st.pyplot(fig1)
             plt.close(fig1)
             st.markdown("</div>", unsafe_allow_html=True)
-
         with p2:
             st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
             mat = np.random.uniform(0.4, 0.9, (4,4))
@@ -197,8 +187,9 @@ elif page == "🔁 Refinement Engine":
     refine_btn = st.button("✨ Refine Once")
     auto_btn = st.button("🚀 Auto-Refine")
 
-    # Placeholders for side-by-side plots
-    plot_slot_c, plot_slot_h = st.columns(2)
+    # Single live preview placeholders
+    plot_convergence = st.empty()
+    plot_heatmap = st.empty()
 
     if refine_btn:
         img, text, lvl = refine(target)
@@ -209,8 +200,7 @@ elif page == "🔁 Refinement Engine":
 
     if auto_btn:
         confs = []
-
-        for _ in range(6):
+        for step in range(6):
             mat = np.zeros((4,4))
             for i in range(4):
                 for j in range(4):
@@ -219,7 +209,8 @@ elif page == "🔁 Refinement Engine":
                     mat[i,j] = c
             confs.append(mat.mean())
 
-            with plot_slot_c:
+            # Update live convergence plot
+            with plot_convergence:
                 st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
                 fig1, ax1 = plt.subplots(figsize=(4,3))
                 ax1.plot(confs, marker='o')
@@ -229,7 +220,8 @@ elif page == "🔁 Refinement Engine":
                 plt.close(fig1)
                 st.markdown("</div>", unsafe_allow_html=True)
 
-            with plot_slot_h:
+            # Update live heatmap
+            with plot_heatmap:
                 st.markdown("<div class='plot-card'>", unsafe_allow_html=True)
                 fig2, ax2 = plt.subplots(figsize=(4,3))
                 sns.heatmap(mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
@@ -239,6 +231,7 @@ elif page == "🔁 Refinement Engine":
                 st.markdown("</div>", unsafe_allow_html=True)
 
             time.sleep(0.5)
+
         st.success("Target difficulty stabilized ✔")
 
 # ===================== FOOTER =====================
