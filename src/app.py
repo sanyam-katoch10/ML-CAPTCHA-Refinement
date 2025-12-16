@@ -3,7 +3,6 @@ from io import BytesIO
 from generator import generate_captcha
 from refine_m import refine, predict
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 import time
 
@@ -15,9 +14,9 @@ st.markdown("""
 <style>
 /* ---------- BACKGROUND ---------- */
 .stApp {
-    background: linear-gradient(120deg, #101010, #1a1a1a, #0f0f0f);
+    background: linear-gradient(135deg, #0a0a0a, #1a1a1a, #121212, #1b1b1b);
     background-size: 400% 400%;
-    animation: bgShift 25s ease infinite;
+    animation: bgShift 30s ease infinite;
     color: #eaeaea;
     font-family: 'Segoe UI', sans-serif;
 }
@@ -30,10 +29,10 @@ st.markdown("""
 /* ---------- TOP BAR ---------- */
 .topbar {
     background: rgba(30,30,30,0.7);
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(15px);
     padding: 20px 30px;
     border-radius: 20px;
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1), 0 15px 40px rgba(0,0,0,0.8);
+    box-shadow: inset 0 1px 3px rgba(255,255,255,0.1), 0 15px 40px rgba(0,0,0,0.8);
     margin-bottom: 25px;
     font-size: 28px;
     font-weight: 800;
@@ -42,8 +41,8 @@ st.markdown("""
 
 /* ---------- SIDEBAR ---------- */
 section[data-testid="stSidebar"] {
-    background: rgba(20,20,20,0.8);
-    backdrop-filter: blur(10px);
+    background: rgba(20,20,20,0.85);
+    backdrop-filter: blur(12px);
     border-right: 1px solid rgba(255,255,255,0.08);
 }
 .sidebar-title {
@@ -54,8 +53,8 @@ section[data-testid="stSidebar"] {
 
 /* ---------- CARDS ---------- */
 .card {
-    background: rgba(40,40,40,0.4);
-    backdrop-filter: blur(12px);
+    background: rgba(40,40,40,0.45);
+    backdrop-filter: blur(15px);
     border-radius: 20px;
     padding: 25px;
     border: 1px solid rgba(255,255,255,0.1);
@@ -64,7 +63,7 @@ section[data-testid="stSidebar"] {
 }
 .card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 0 25px rgba(255,255,255,0.2), 0 20px 40px rgba(0,0,0,0.8);
+    box-shadow: 0 0 30px rgba(0,255,255,0.4), 0 20px 40px rgba(0,0,0,0.8);
 }
 
 /* ---------- BUTTONS ---------- */
@@ -74,13 +73,13 @@ section[data-testid="stSidebar"] {
     padding: 14px;
     font-weight: 700;
     color: #fff;
-    background: linear-gradient(135deg,#4b4b4b,#9b9b9b,#4b4b4b);
+    background: linear-gradient(135deg,#3b3b3b,#7b7b7b,#3b3b3b);
     box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 0 6px 18px rgba(0,0,0,0.7);
     transition: all 0.3s ease;
 }
 .stButton button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba(220,220,220,0.5), 0 12px 35px rgba(0,0,0,0.9);
+    box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 12px 35px rgba(0,0,0,0.9);
 }
 
 /* ---------- FOOTER ---------- */
@@ -149,7 +148,7 @@ elif page == "🔁 Refinement Engine":
     live_slot = st.empty()       # live CAPTCHA preview
     col1, col2 = st.columns([1,1])  # side-by-side plots
     conv_slot = col1.empty()     # convergence line
-    heat_slot = col2.empty()     # heatmap
+    heat_slot = col2.empty()     # animated heatmap
 
     if refine_btn:
         img, text, lvl = refine(target)
@@ -161,7 +160,8 @@ elif page == "🔁 Refinement Engine":
     if auto_btn:
         confs = []
         grid = 4
-        mat = np.zeros((grid, grid))  # heatmap
+        mat = np.zeros((grid, grid))
+        cmap = plt.get_cmap("coolwarm")
 
         for step in range(6):
             for i in range(grid):
@@ -173,7 +173,7 @@ elif page == "🔁 Refinement Engine":
 
             confs.append(mat.mean())
 
-            # Update convergence line
+            # Convergence line
             fig1, ax1 = plt.subplots()
             ax1.plot(confs, marker='o', color='#00ffff')
             ax1.set_ylim(0,1)
@@ -182,9 +182,12 @@ elif page == "🔁 Refinement Engine":
             conv_slot.pyplot(fig1, clear_figure=True)
             plt.close(fig1)
 
-            # Update heatmap
+            # Animated heatmap
             fig2, ax2 = plt.subplots()
-            sns.heatmap(mat, annot=True, fmt=".2f", cmap="coolwarm", ax=ax2)
+            im = ax2.imshow(mat, cmap=cmap, vmin=0, vmax=1)
+            for i in range(grid):
+                for j in range(grid):
+                    ax2.text(j, i, f"{mat[i,j]:.2f}", ha='center', va='center', color='white')
             ax2.set_title("Heatmap")
             heat_slot.pyplot(fig2, clear_figure=True)
             plt.close(fig2)
