@@ -161,41 +161,50 @@ elif page == "🔁 Refinement Engine":
     if auto_btn:
         confs = []
         grid = 4
-        mat = np.zeros((grid, grid))
+        mat_current = np.zeros((grid, grid))
+        steps_per_update = 5
         norm = mcolors.Normalize(vmin=0, vmax=1)
-        cmap = plt.cm.plasma  # professional heatmap colors
+        cmap = mcolors.LinearSegmentedColormap.from_list("blue_green_red", ["blue","green","red"])
 
         for step in range(6):
+            # Generate target matrix
+            mat_target = np.zeros((grid, grid))
             for i in range(grid):
                 for j in range(grid):
                     img, _, _ = refine(target)
                     live_slot.image(img, use_column_width=True)
                     _, c = predict(img)
-                    mat[i, j] = c
+                    mat_target[i, j] = c
 
-            confs.append(mat.mean())
+            confs.append(mat_target.mean())
 
-            # Convergence line
-            fig1, ax1 = plt.subplots()
-            ax1.plot(confs, marker='o', color='#00ffff')
-            ax1.set_ylim(0,1)
-            ax1.set_title("Convergence Line", color="#00ffff")
-            ax1.grid(True, alpha=0.3)
-            conv_slot.pyplot(fig1, clear_figure=True)
-            plt.close(fig1)
+            # Smooth interpolation
+            for t in range(1, steps_per_update + 1):
+                mat_interpolated = mat_current + (mat_target - mat_current) * (t / steps_per_update)
 
-            # Animated professional heatmap
-            fig2, ax2 = plt.subplots()
-            im = ax2.imshow(mat, cmap=cmap, norm=norm)
-            for i in range(grid):
-                for j in range(grid):
-                    ax2.text(j, i, f"{mat[i,j]:.2f}", ha='center', va='center', color='white', fontsize=10)
-            ax2.set_title("Heatmap", color="#00ffff")
-            ax2.tick_params(colors="#e0e0e0")
-            heat_slot.pyplot(fig2, clear_figure=True)
-            plt.close(fig2)
+                # Convergence line
+                fig1, ax1 = plt.subplots()
+                ax1.plot(confs, marker='o', color='#00ffff')
+                ax1.set_ylim(0,1)
+                ax1.set_title("Convergence Line", color="#00ffff")
+                ax1.grid(True, alpha=0.3)
+                conv_slot.pyplot(fig1, clear_figure=True)
+                plt.close(fig1)
 
-            time.sleep(0.5)
+                # Animated heatmap
+                fig2, ax2 = plt.subplots()
+                im = ax2.imshow(mat_interpolated, cmap=cmap, norm=norm)
+                for i in range(grid):
+                    for j in range(grid):
+                        ax2.text(j, i, f"{mat_interpolated[i,j]:.2f}", ha='center', va='center',
+                                 color='black', fontsize=10, fontweight='bold')
+                ax2.set_title("Heatmap", color="#00ffff")
+                ax2.tick_params(colors="#e0e0e0")
+                heat_slot.pyplot(fig2, clear_figure=True)
+                plt.close(fig2)
+                time.sleep(0.1)
+
+            mat_current = mat_target.copy()
 
         st.success("Target difficulty stabilized ✔")
 
