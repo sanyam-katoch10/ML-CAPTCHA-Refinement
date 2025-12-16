@@ -208,9 +208,10 @@ elif page == "🔁 Refinement Engine":
     
             mat_current = mat_target.copy()
 
-    st.success("Target difficulty stabilized ✔")
+        st.success("Target difficulty stabilized ✔")
 
 
 # ===================== FOOTER =====================
 st.markdown("<div class='footer'>✨ Built by SANYAM KATOCH ✨</div>", unsafe_allow_html=True)
+
 
