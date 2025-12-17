@@ -199,7 +199,7 @@ with st.sidebar:
     st.markdown("<div class='sidebar-title'>⚙️ Navigation</div>", unsafe_allow_html=True)
     page = st.radio("", ["📊 Dashboard", "🖼 CAPTCHA Generator", "🔁 Refinement Engine"])
 
-if page == " Dashboard":
+if page == "📊 Dashboard":
     st.markdown("##  System Overview")
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -209,7 +209,7 @@ if page == " Dashboard":
     with col3:
         st.markdown("<div class='card'> Active Model<br><h2>CNN v1.0</h2></div>", unsafe_allow_html=True)
 
-elif page == " CAPTCHA Generator":
+elif page == "🖼 CAPTCHA Generator":
     st.markdown("##  CAPTCHA Generator")
     col1, col2 = st.columns([1.2, 1.8])
     with col1:
@@ -229,7 +229,7 @@ elif page == " CAPTCHA Generator":
             st.markdown(f"**Text:** `{text}`  |  **Difficulty:** `{pred.upper()}`  |  **Confidence:** `{conf:.2f}`")
         st.markdown("</div>", unsafe_allow_html=True)
 
-elif page == " Refinement Engine":
+elif page == "🔁 Refinement Engine":
     st.markdown("##  Refinement Engine")
     target = st.selectbox("Target Difficulty", ["easy", "medium", "hard"])
     refine_btn = st.button(" Refine Once")
@@ -290,5 +290,6 @@ elif page == " Refinement Engine":
         st.success("Target difficulty stabilized ✔")
 
 st.markdown("<div class='footer'>✨ Built by SANYAM KATOCH ✨</div>", unsafe_allow_html=True) 
+
 
 
