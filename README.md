@@ -33,8 +33,21 @@
 ## 🌐 Live Demo
 
 <p align="center">
-  <a href="https://sam-ml-captcha-refinement.streamlit.app/" target="_blank">
-    <img src="https://img.shields.io/badge/🚀_Launch_Streamlit_App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white"/>
+  <a href="https://botshield0captcha-sam.streamlit.app/" target="_blank" style="text-decoration:none;">
+    <span style="
+      display:inline-block;
+      padding:14px 26px;
+      font-size:16px;
+      font-weight:700;
+      color:#ffffff;
+      background:linear-gradient(135deg,#ff416c,#ff4b2b);
+      border-radius:14px;
+      box-shadow:0 0 18px rgba(255,75,75,0.55);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    ">
+      🚀 Launch Live Streamlit App
+    </span>
   </a>
 </p>
 
