@@ -34,20 +34,12 @@
 
 <p align="center">
   <a href="https://botshield0captcha-sam.streamlit.app/" target="_blank">
-    <svg width="360" height="60" viewBox="0 0 360 60" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#ff416c"/>
-          <stop offset="100%" stop-color="#ff4b2b"/>
-        </linearGradient>
-      </defs>
-      <rect x="0" y="0" width="360" height="60" rx="14" fill="url(#grad)"/>
-      <text x="180" y="38" text-anchor="middle" font-size="18" fill="white" font-weight="bold">
-        🚀 Launch Live Streamlit App
-      </text>
-    </svg>
+    <img
+      src="https://img.shields.io/badge/🚀_Launch_Streamlit_App-0F172A?style=for-the-badge&logo=streamlit&logoColor=FF4B4B"
+    />
   </a>
 </p>
+
 
 
 ---
