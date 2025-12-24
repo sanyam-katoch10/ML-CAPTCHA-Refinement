@@ -18,5 +18,5 @@ for cls in CLASSES:
         plt.subplot(1, 6, i+1)
         plt.imshow(arr.astype("uint8"))
         plt.axis("off")
-    plt.show()
+    plt.show() .
 
